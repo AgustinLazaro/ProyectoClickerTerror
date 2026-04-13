@@ -1,69 +1,45 @@
 using UnityEngine;
-
 public class CameraSnap : MonoBehaviour
-{
-    
-    [Header("Ángulos de Vista (Relativos al centro)")]
-    public float anguloVentana = -80f; 
-    public float anguloPuerta = 80f;    
-    public float anguloAtras = 180f;    
+{ 
+    [Header("View Angles (Relative to Center)")]
+    [SerializeField] private float windowAngle = -80f; 
+    [SerializeField] private float doorAngle = 80f;    
+    [SerializeField] private float backAngle = 180f;
 
-    
-    [Header("Configuración")]
-    public float velocidadGiro = 15f;
 
-    
-    float rotacionY = 0f;
-    float centroY;
-    Quaternion rotacionObjetivo;
+    [Header("Configuration")]
+    [SerializeField] float rotationSpeed = 15f;
 
-    void Start()
+    private float rotationY = 0f;
+    private float centrerY;
+    private Quaternion targetRotation;
+
+    private void Start()
     {
-       
-
-       
         Vector3 rotacionInicial = transform.localRotation.eulerAngles;
-        rotacionY = rotacionInicial.y;
+        rotationY = rotacionInicial.y;
 
-        if (rotacionY > 180f) rotacionY -= 360f;
-
+        if (rotationY > 180f) rotationY -= 360f;
        
-        centroY = rotacionY;
-
-      
-        rotacionObjetivo = Quaternion.Euler(0f, centroY, 0f);
+        centrerY = rotationY;
+        targetRotation = Quaternion.Euler(0f, centrerY, 0f);
     }
 
-    void Update()
+    private void Update()
     {
-        
         DeterminarObjetivo();
-
-       
-        transform.localRotation = Quaternion.Lerp(transform.localRotation, rotacionObjetivo, velocidadGiro * Time.deltaTime);
+        transform.localRotation = Quaternion.Lerp(transform.localRotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
 
-    void DeterminarObjetivo()
+    private void DeterminarObjetivo()
     {
-     
         if (Input.GetKey(KeyCode.S))
-        {
-           
-            rotacionObjetivo = Quaternion.Euler(0f, centroY + anguloAtras, 0f);
-        }
+            targetRotation = Quaternion.Euler(0f, centrerY + backAngle, 0f);
         else if (Input.GetKey(KeyCode.D))
-        {
-            rotacionObjetivo = Quaternion.Euler(0f, centroY + anguloPuerta, 0f);
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            
-            rotacionObjetivo = Quaternion.Euler(0f, centroY + anguloVentana, 0f);
-        }
+            targetRotation = Quaternion.Euler(0f, centrerY + doorAngle, 0f);
+        else if (Input.GetKey(KeyCode.A))  
+            targetRotation = Quaternion.Euler(0f, centrerY + windowAngle, 0f);
         else
-        {
-            
-            rotacionObjetivo = Quaternion.Euler(0f, centroY, 0f);
-        }
+            targetRotation = Quaternion.Euler(0f, centrerY, 0f);
     }
 }

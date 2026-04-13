@@ -3,29 +3,29 @@ using UnityEngine.UI;
 
 public class ClickerManager : MonoBehaviour
 {
-    [Header("Sistema de Errores")]
-    public GameObject panelPopUp;
-    public Button botonCerrarPopUp;
-    public bool bloqueadoPorError = false;
+    [Header("Error System")]
+    public GameObject popUpPanel;
+    public Button popUpCloseButton;
+    public bool errorBlocked = false;
 
     void Start()
     {
         
-        botonCerrarPopUp.onClick.AddListener(CerrarError);
+        popUpCloseButton.onClick.AddListener(CerrarError);
 
         
-        panelPopUp.SetActive(false);
+        popUpPanel.SetActive(false);
     }
 
     public void ActivarError()
     {
-        bloqueadoPorError = true;
-        panelPopUp.SetActive(true);
+        errorBlocked = true;
+        popUpPanel.SetActive(true);
     }
 
     public void CerrarError()
     {
-        bloqueadoPorError = false;
-        panelPopUp.SetActive(false);
+        errorBlocked = false;
+        popUpPanel.SetActive(false);
     }
 }
