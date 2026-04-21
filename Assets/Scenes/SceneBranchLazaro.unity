@@ -262,12 +262,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementLazaro
   isSitting: 1
-  walkSpeed: 3
+  walkSpeed: 1
   transitionTime: 0.5
   acceleration: 8
   deceleration: 10
   bobSpeed: 6
-  bobHeight: 0.05
+  bobHeight: 0.02
   cameraSnapScript: {fileID: 2063018870}
   mouseLookScript: {fileID: 2063018874}
 --- !u!4 &423629870
