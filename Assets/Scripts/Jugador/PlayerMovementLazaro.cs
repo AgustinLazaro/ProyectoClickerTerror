@@ -95,6 +95,9 @@ public class PlayerMovementLazaro : MonoBehaviour
         Vector3 direction = new Vector3(moveX, 0, moveZ).normalized;
         bool isPressingKeys = (moveX != 0 || moveZ != 0);
 
+        //Multiplicar el tiempo acumulado de caminata por una función Seno para obtener una onda entre -1 y 1,
+        //y luego escalamos esa amplitud multiplicándola por 0.01 para generar el mini movimiento vertical de la cámara.
+        //( AlturaActual = AlturaBase + ( \sin(TiempoAcumulado \times Velocidad) \times AlturaMaxima )
         if (isPressingKeys)
         {
             Vector3 targetSpeed = direction * walkSpeed;
