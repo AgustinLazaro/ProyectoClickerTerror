@@ -3,36 +3,79 @@ using UnityEngine.UI;
 
 public class AppController : MonoBehaviour
 {
-    [Header("PC")]
-    [SerializeField] private CanvasGroup desktop;
-    [SerializeField] private CanvasGroup appWindow;
-    [SerializeField] private Button appTestButton;
-    [SerializeField] private Button closeButton;
+    [Header("Home")]
+    [SerializeField] private CanvasGroup homeScreen;
 
-    public void Awake()
+    [Header("App Buttons")]
+    [SerializeField] private Button app1Button;
+    [SerializeField] private Button app2Button;
+    [SerializeField] private Button app3Button;
+    [SerializeField] private Button app4Button;
+
+    [Header("Windows")]
+    [SerializeField] private CanvasGroup app1Window;
+    [SerializeField] private CanvasGroup app2Window;
+    [SerializeField] private CanvasGroup app3Window;
+    [SerializeField] private CanvasGroup app4Window;
+
+    [Header("Close Buttons")]
+    [SerializeField] private Button closeButton1;
+    [SerializeField] private Button closeButton2;
+    [SerializeField] private Button closeButton3;
+    [SerializeField] private Button closeButton4;
+
+    private CanvasGroup currentApp = null;
+
+    private void Awake()
     {
         AddButtonsListeners();
-        SetStateCanvasGroup(desktop, true);
-        SetStateCanvasGroup(appWindow, false);
+        SetStateCanvasGroup(homeScreen, true);
+        CloseAllWindows();
     }
 
     private void AddButtonsListeners()
     {
-        appTestButton.onClick.AddListener(OpenApp);
-        closeButton.onClick.AddListener(CloseApp);
+        app1Button.onClick.AddListener(() => OpenApp(app1Window));
+        app2Button.onClick.AddListener(() => OpenApp(app2Window));
+        app3Button.onClick.AddListener(() => OpenApp(app3Window));
+        app4Button.onClick.AddListener(() => OpenApp(app4Window));
+
+        closeButton1.onClick.AddListener(CloseCurrentApp);
+        closeButton2.onClick.AddListener(CloseCurrentApp);
+        closeButton3.onClick.AddListener(CloseCurrentApp);
+        closeButton4.onClick.AddListener(CloseCurrentApp);
     }
 
-    public void OpenApp()
+    private void OpenApp(CanvasGroup app)
     {
-        SetStateCanvasGroup(desktop, false);
-        SetStateCanvasGroup(appWindow, true);
+        if (currentApp == app) return;
+
+        SetStateCanvasGroup(homeScreen, false);
+        SetStateCanvasGroup(app, true);
+        currentApp = app;
+
+        app.GetComponent<IApp>()?.OnAppOpen();
     }
 
-    public void CloseApp()
+    public void CloseCurrentApp()
     {
-        SetStateCanvasGroup(appWindow, false);
-        SetStateCanvasGroup(desktop, true);
+        if (currentApp == null) return;
+
+        currentApp.GetComponent<IApp>()?.OnAppClose();
+
+        SetStateCanvasGroup(currentApp, false);
+        SetStateCanvasGroup(homeScreen, true);
+        currentApp = null;
     }
+
+    private void CloseAllWindows()
+    {
+        SetStateCanvasGroup(app1Window, false);
+        SetStateCanvasGroup(app2Window, false);
+        SetStateCanvasGroup(app3Window, false);
+        SetStateCanvasGroup(app4Window, false);
+    }
+
     private void SetStateCanvasGroup(CanvasGroup canvasGroup, bool state)
     {
         // Activa o desactiva visibilidad e interacción de un panel
@@ -41,14 +84,21 @@ public class AppController : MonoBehaviour
         canvasGroup.blocksRaycasts = state;
     }
 
-    public void OnDestroy()
+    private void OnDestroy()
     {
         RemoveButtonsListeners();
     }
 
     private void RemoveButtonsListeners()
     {
-        appTestButton.onClick.RemoveAllListeners();
-        closeButton.onClick.RemoveAllListeners();
+        app1Button.onClick.RemoveAllListeners();
+        app2Button.onClick.RemoveAllListeners();
+        app3Button.onClick.RemoveAllListeners();
+        app4Button.onClick.RemoveAllListeners();
+
+        closeButton1.onClick.RemoveAllListeners();
+        closeButton2.onClick.RemoveAllListeners();
+        closeButton3.onClick.RemoveAllListeners();
+        closeButton4.onClick.RemoveAllListeners();
     }
 }
