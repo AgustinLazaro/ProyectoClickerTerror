@@ -3,33 +3,40 @@ using System.Collections;
 
 public class CoffeeMaker : MonoBehaviour
 {
-    [Header("Configuracion")]
-    public float energiaQueRecupera = 25f;
-    public GameObject jarraVisual;
+    [Header("Settings")]
+    public GameObject potVisual;
+    public float brewTime = 10f;
 
-    public void Interactuar()
+    [Header("State")]
+    public bool isPotReady = true;
+
+    public void Interact(PlayerInteraction player)
     {
-        // 1. Ahora buscamos al ParanoiaManager
-        ParanoiaManager paranoia = Object.FindFirstObjectByType<ParanoiaManager>();
-
-        if (paranoia != null)
+        if (isPotReady && !player.hasCoffeePot && !player.hasFullCup)
         {
-            // 2. Le pasamos los puntos de energía
-            paranoia.RefillStamina(energiaQueRecupera);
-            Debug.Log("Café tomado: + " + energiaQueRecupera);
-        }
-        else
-        {
-            Debug.LogError("¡No encontré el ParanoiaManager en la escena!");
-        }
+            player.hasCoffeePot = true;
+            isPotReady = false;
 
-        if (jarraVisual != null) StartCoroutine(EfectoJarra());
+            if (potVisual != null) potVisual.SetActive(false);
+
+            Debug.Log("Grabbed the coffee pot. Hold Left Click on the cup to fill it.");
+        }
+        else if (!isPotReady)
+        {
+            Debug.Log("Coffee maker is currently brewing. Please wait.");
+        }
     }
 
-    IEnumerator EfectoJarra()
+    public void StartBrewing()
     {
-        jarraVisual.SetActive(false);
-        yield return new WaitForSeconds(2f);
-        jarraVisual.SetActive(true);
+        StartCoroutine(BrewRoutine());
+    }
+
+    IEnumerator BrewRoutine()
+    {
+        yield return new WaitForSeconds(brewTime);
+        isPotReady = true;
+        if (potVisual != null) potVisual.SetActive(true);
+        Debug.Log("Coffee maker is ready again!");
     }
 }

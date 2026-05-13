@@ -2,23 +2,25 @@ using UnityEngine;
 
 public class ComputerInteraction : MonoBehaviour
 {
-    // Arrastrá acá el objeto 'arms_rig' (el que tiene el Animator)
-    public Animator misBrazos;
+    [Header("References")]
+   
+    public Animator armsAnimator;
 
-    // Empezamos en true porque el jugador arranca sentado
-    private bool estaSentado = true;
+    [Header("State")]
+    
+    private bool isSeated = true;
 
-    public void UsarComputadora()
+    public void UseComputer()
     {
-        // Cambiamos el estado (si era true, pasa a false)
-        estaSentado = !estaSentado;
+        
+        isSeated = !isSeated;
 
-        if (misBrazos != null)
+        if (armsAnimator != null)
         {
-            // Le mandamos la orden directo al parámetro del Animator
-            misBrazos.SetBool("EnPC", estaSentado);
+           
+            armsAnimator.SetBool("EnPC", isSeated);
         }
 
-        Debug.Log("¿Está sentado?: " + estaSentado);
+        Debug.Log("Is Player Seated?: " + isSeated);
     }
 }
