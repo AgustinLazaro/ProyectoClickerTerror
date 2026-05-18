@@ -78,6 +78,7 @@ public class AvoidClickGame : MonoBehaviour, IApp
     {
         if (!isGameActive) return;
         _timeLeft -= Time.deltaTime;
+        _timeNextAppearance -= Time.deltaTime;
         UpdateUI();
 
         if(_timeNextAppearance <= 0f)

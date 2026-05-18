@@ -1170,7 +1170,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AvoidClickGame
   timeLimit: 15
   intervalAppearance: 1.5
-  totalRights: 3
+  totalRights: 5
   rightButtons:
   - {fileID: 1589064678}
   - {fileID: 1401204427}
