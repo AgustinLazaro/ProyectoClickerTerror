@@ -54,6 +54,10 @@ public class AppController : MonoBehaviour
         SetStateCanvasGroup(app, true);
         currentApp = app;
 
+        //var iapp = app.GetComponent<IApp>();
+        //Debug.Log($"IApp encontrado: {iapp != null} en {app.name}");
+        //iapp?.OnAppOpen();
+        //Debug.Log($"IApp encontrado: {app != null} en {app.name}");
         app.GetComponent<IApp>()?.OnAppOpen();
     }
 
