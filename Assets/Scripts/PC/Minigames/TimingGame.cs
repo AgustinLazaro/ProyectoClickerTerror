@@ -19,7 +19,9 @@ public class TimingGame : MonoBehaviour, IApp
     private float _timeLeft;
     private float _direction = 1f;
     private bool isGameActive = false;
-    private AppController appController;
+
+    private AppController _appController;
+    private ScoreManager _scoreManager;
 
     // posicion fija de la zona verde (0 a 1)
     private float greenZoneMin;
@@ -27,7 +29,8 @@ public class TimingGame : MonoBehaviour, IApp
 
     private void Awake()
     {
-        appController = FindAnyObjectByType<AppController>();
+        _appController = FindAnyObjectByType<AppController>();
+        _scoreManager = FindAnyObjectByType<ScoreManager>();
         stopButton.onClick.AddListener(OnStop);
         GreenZoneConfiguration();
     }
@@ -81,7 +84,7 @@ public class TimingGame : MonoBehaviour, IApp
         ActualizarUI();
 
         if (_timeLeft <= 0f)
-            GameOver(gano: false);
+            GameOver(win: false);
     }
 
     private void OnStop()
@@ -91,21 +94,25 @@ public class TimingGame : MonoBehaviour, IApp
         bool enZonaVerde = SliderBar.value >= greenZoneMin &&
                            SliderBar.value <= greenZoneMax;
 
-        GameOver(gano: enZonaVerde);
+        GameOver(win: enZonaVerde);
     }
 
-    private void GameOver(bool gano)
+    private void GameOver(bool win)
     {
         isGameActive = false;
         resultText.gameObject.SetActive(true);
-        resultText.text = gano ? "¡Ganaste!" : "¡Perdiste!";
+        resultText.text = win ? "¡Ganaste!" : "¡Perdiste!";
+
+        if (win)
+            _scoreManager.AddPoints(40);
+
         StartCoroutine(VolverAlHomeScreen());
     }
 
     private System.Collections.IEnumerator VolverAlHomeScreen()
     {
         yield return new WaitForSeconds(1.5f);
-        appController.CloseCurrentApp();
+        _appController.CloseCurrentApp();
     }
 
     private void ActualizarUI()

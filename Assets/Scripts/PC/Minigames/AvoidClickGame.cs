@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,10 +26,12 @@ public class AvoidClickGame : MonoBehaviour, IApp
     private int _rightsClicked = 0;
     private bool isGameActive = false;
     private AppController _appController;
+    private ScoreManager _scoreManager;
 
     private void Awake()
     {
         _appController = FindAnyObjectByType<AppController>();
+        _scoreManager = FindAnyObjectByType<ScoreManager>();
         RegisterButtons();
     }
 
@@ -148,6 +151,10 @@ public class AvoidClickGame : MonoBehaviour, IApp
         HideAll();
         resultText.gameObject.SetActive(true);
         resultText.text = win ? "You win!" : "You lose";
+
+        if (win)
+            _scoreManager.AddPoints(30);
+
         StartCoroutine(BackToHomeScreen());
     }
 

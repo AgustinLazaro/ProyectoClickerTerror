@@ -21,10 +21,12 @@ public class DragObjectGame : MonoBehaviour, IApp
     //private Canvas canvas;
 
     private AppController _appController;
+    private ScoreManager _scoreManager;
 
     private void Awake()
     {
         _appController = FindAnyObjectByType<AppController>();
+        _scoreManager = FindAnyObjectByType<ScoreManager>();
         //canvas = GetComponentInParent<Canvas>();
         _initialPosition = dragableObject.anchoredPosition;
     }
@@ -97,6 +99,10 @@ public class DragObjectGame : MonoBehaviour, IApp
         isGameActive = false;
         resultText.gameObject.SetActive(true);
         resultText.text = win ? "You Win!" : "You Lose";
+
+        if (win)
+            _scoreManager.AddPoints(20);
+
         StartCoroutine(BackToHomeScreen());
     }
 

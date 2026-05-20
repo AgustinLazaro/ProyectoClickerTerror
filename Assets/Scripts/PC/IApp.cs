@@ -21,7 +21,7 @@ public interface IApp
 //private float _timeLeft;
 //private float _direction = 1f;
 //private bool isGameActive = false;
-//private AppController appController;
+//private AppController _appController;
 
 //// posicion fija de la zona verde (0 a 1)
 //private float greenZoneMin;
@@ -29,7 +29,7 @@ public interface IApp
 
 //private void Awake()
 //{
-//    appController = FindObjectOfType<AppController>();
+//    _appController = FindObjectOfType<AppController>();
 //    stopButton.onClick.AddListener(OnStop);
 //    GreenZoneConfiguration();
 //}
@@ -107,7 +107,7 @@ public interface IApp
 //private System.Collections.IEnumerator VolverAlHomeScreen()
 //{
 //    yield return new WaitForSeconds(1.5f);
-//    appController.CloseCurrentApp();
+//    _appController.CloseCurrentApp();
 //}
 
 //private void ActualizarUI()

@@ -20,10 +20,12 @@ public class QuickClickGame : MonoBehaviour, IApp
     private bool _isGameActive = false;
 
     private AppController _appController;
+    private ScoreManager _scoreManager;
 
     private void Awake()
     {
         _appController = FindAnyObjectByType<AppController>();
+        _scoreManager = FindAnyObjectByType<ScoreManager>();
         clickButton.onClick.AddListener(OnClick);
     }
 
@@ -83,6 +85,9 @@ public class QuickClickGame : MonoBehaviour, IApp
 
         resultText.gameObject.SetActive(true);
         resultText.text = win ? "You Win!" : "You Lose";
+
+        if (win)
+            _scoreManager.AddPoints(10);
 
         StartCoroutine(BackToHomeScreen());
     }
