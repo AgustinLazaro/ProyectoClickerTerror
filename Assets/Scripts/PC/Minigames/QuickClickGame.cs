@@ -21,11 +21,13 @@ public class QuickClickGame : MonoBehaviour, IApp
 
     private AppController _appController;
     private ScoreManager _scoreManager;
+    private AudioManager _audioManager;
 
     private void Awake()
     {
         _appController = FindAnyObjectByType<AppController>();
         _scoreManager = FindAnyObjectByType<ScoreManager>();
+        _audioManager = FindAnyObjectByType<AudioManager>();
         clickButton.onClick.AddListener(OnClick);
     }
 
@@ -72,6 +74,7 @@ public class QuickClickGame : MonoBehaviour, IApp
     {
         if (!_isGameActive) return;
 
+        _audioManager.PlayClick();
         _currentClicks++;
         UpdateUI();
 
@@ -87,9 +90,16 @@ public class QuickClickGame : MonoBehaviour, IApp
         resultText.text = win ? "You Win!" : "You Lose";
 
         if (win)
+        {
+            _audioManager.PlayWinJingle();
             _scoreManager.AddPoints(10);
+        }
+        else
+        {
+            _audioManager.PlayLoseJingle();
+        }
 
-        StartCoroutine(BackToHomeScreen());
+            StartCoroutine(BackToHomeScreen());
     }
 
     private IEnumerator BackToHomeScreen()

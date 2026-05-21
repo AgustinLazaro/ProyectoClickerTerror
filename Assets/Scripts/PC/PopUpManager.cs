@@ -19,10 +19,12 @@ public class PopUpManager : MonoBehaviour
 
     private float _nextTimePopUp;
     private GameObject _currentPopUp = null;
+    private AudioManager _audioManager;
 
     private void Awake()
     {
         _nextTimePopUp = intervalAppearance;
+        _audioManager = FindAnyObjectByType<AudioManager>();
     }
 
     private void Update()
@@ -37,6 +39,7 @@ public class PopUpManager : MonoBehaviour
 
     private void ShowPopUp()
     {
+        _audioManager.PlayError();
         string mensaje = messages[Random.Range(0, messages.Length)];
 
         _currentPopUp = Instantiate(popUpPrefab, popUpContainer);
@@ -55,6 +58,8 @@ public class PopUpManager : MonoBehaviour
     public void ClosePopUp()
     {
         if (_currentPopUp == null) return;
+
+        _audioManager.PlayClick();
 
         Destroy(_currentPopUp);
         _currentPopUp = null;
