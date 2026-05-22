@@ -88,12 +88,12 @@ public class UIResultScreen : MonoBehaviour
     private void OnPlayAgainClicked()
     {
         // Reinicia el juego cargando la escena principal.
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(1);
         Time.timeScale = 1;
     }
     private void OnExitGameClicked()
     {
         // Vuelve al menú principal.
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(0);
     }
 }
