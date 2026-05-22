@@ -21,10 +21,14 @@ public class DragObjectGame : MonoBehaviour, IApp
     //private Canvas canvas;
 
     private AppController _appController;
+    private ScoreManager _scoreManager;
+    private AudioManager _audioManager;
 
     private void Awake()
     {
         _appController = FindAnyObjectByType<AppController>();
+        _scoreManager = FindAnyObjectByType<ScoreManager>();
+        _audioManager = FindAnyObjectByType<AudioManager>();
         //canvas = GetComponentInParent<Canvas>();
         _initialPosition = dragableObject.anchoredPosition;
     }
@@ -64,10 +68,11 @@ public class DragObjectGame : MonoBehaviour, IApp
             GameOver(win: false);
     }
 
-    //public void OnBeginDrag(PointerEventData eventData)
-    //{
-    //    if (!isGameActive) return;
-    //}
+    public void OnBeginDrag()
+    {
+        if (!isGameActive) return;
+        _audioManager.PlayClick();
+    }
 
     public void OnDrag(Vector2 delta)
     {
@@ -97,6 +102,17 @@ public class DragObjectGame : MonoBehaviour, IApp
         isGameActive = false;
         resultText.gameObject.SetActive(true);
         resultText.text = win ? "You Win!" : "You Lose";
+
+        if (win)
+        {
+            _audioManager.PlayWinJingle();
+            _scoreManager.AddPoints(20);
+        }
+        else
+        {
+            _audioManager.PlayLoseJingle();
+        }
+
         StartCoroutine(BackToHomeScreen());
     }
 

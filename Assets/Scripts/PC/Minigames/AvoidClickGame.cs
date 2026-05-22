@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,11 +25,16 @@ public class AvoidClickGame : MonoBehaviour, IApp
     private float _timeNextAppearance;
     private int _rightsClicked = 0;
     private bool isGameActive = false;
+
     private AppController _appController;
+    private ScoreManager _scoreManager;
+    private AudioManager _audioManager;
 
     private void Awake()
     {
         _appController = FindAnyObjectByType<AppController>();
+        _scoreManager = FindAnyObjectByType<ScoreManager>();
+        _audioManager = FindAnyObjectByType<AudioManager>();
         RegisterButtons();
     }
 
@@ -126,6 +132,7 @@ public class AvoidClickGame : MonoBehaviour, IApp
         Debug.Log($"Click correcto en: {button.name}");
         if (!isGameActive) return;
 
+        _audioManager.PlayClick();
         button.gameObject.SetActive(false);
         _rightsClicked++;
         UpdateUI();
@@ -139,6 +146,7 @@ public class AvoidClickGame : MonoBehaviour, IApp
         Debug.Log("Click incorrecto");
         if (!isGameActive) return;
 
+        _audioManager.PlayClick();
         GameOver(win: false);
     }
 
@@ -148,6 +156,17 @@ public class AvoidClickGame : MonoBehaviour, IApp
         HideAll();
         resultText.gameObject.SetActive(true);
         resultText.text = win ? "You win!" : "You lose";
+
+        if (win)
+        {
+            _audioManager.PlayWinJingle();
+            _scoreManager.AddPoints(30);
+        }
+        else
+        {
+            _audioManager.PlayLoseJingle();
+        }
+
         StartCoroutine(BackToHomeScreen());
     }
 

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,10 +25,15 @@ public class AppController : MonoBehaviour
     [SerializeField] private Button closeButton3;
     [SerializeField] private Button closeButton4;
 
+    [Header("Fade")]
+    [SerializeField] private float fadeDuration = 0.3f;
+
     private CanvasGroup currentApp = null;
+    private AudioManager audioManager;
 
     private void Awake()
     {
+        audioManager = FindAnyObjectByType<AudioManager>();
         AddButtonsListeners();
         SetStateCanvasGroup(homeScreen, true);
         CloseAllWindows();
@@ -50,15 +56,18 @@ public class AppController : MonoBehaviour
     {
         if (currentApp == app) return;
 
-        SetStateCanvasGroup(homeScreen, false);
-        SetStateCanvasGroup(app, true);
-        currentApp = app;
+        CloseCurrentApp();
 
-        //var iapp = app.GetComponent<IApp>();
-        //Debug.Log($"IApp encontrado: {iapp != null} en {app.name}");
-        //iapp?.OnAppOpen();
-        //Debug.Log($"IApp encontrado: {app != null} en {app.name}");
+        currentApp = app;
         app.GetComponent<IApp>()?.OnAppOpen();
+        audioManager.PlayOpen();
+
+        StartCoroutine(FadeIn(app));
+        StartCoroutine(FadeOut(homeScreen));
+
+        //SetStateCanvasGroup(homeScreen, false);
+        //SetStateCanvasGroup(app, true);
+        //app.GetComponent<IApp>()?.OnAppOpen();
     }
 
     public void CloseCurrentApp()
@@ -66,10 +75,45 @@ public class AppController : MonoBehaviour
         if (currentApp == null) return;
 
         currentApp.GetComponent<IApp>()?.OnAppClose();
+        audioManager.PlayClose();
 
-        SetStateCanvasGroup(currentApp, false);
-        SetStateCanvasGroup(homeScreen, true);
+        StartCoroutine(FadeOut(currentApp));
+        StartCoroutine(FadeIn(homeScreen));
+
         currentApp = null;
+
+        //SetStateCanvasGroup(currentApp, false);
+        //SetStateCanvasGroup(homeScreen, true);
+    }
+
+    private IEnumerator FadeIn(CanvasGroup canvasGroup)
+    {
+        canvasGroup.interactable = true;
+        canvasGroup.blocksRaycasts = true;
+
+        float tiempo = 0f;
+        while (tiempo < fadeDuration)
+        {
+            tiempo += Time.deltaTime;
+            canvasGroup.alpha = Mathf.Clamp01(tiempo / fadeDuration);
+            yield return null;
+        }
+        canvasGroup.alpha = 1f;
+    }
+
+    private IEnumerator FadeOut(CanvasGroup canvasGroup)
+    {
+        float tiempo = 0f;
+        while (tiempo < fadeDuration)
+        {
+            tiempo += Time.deltaTime;
+            canvasGroup.alpha = Mathf.Clamp01(1f - tiempo / fadeDuration);
+            yield return null;
+        }
+
+        canvasGroup.alpha = 0f;
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
     }
 
     private void CloseAllWindows()
