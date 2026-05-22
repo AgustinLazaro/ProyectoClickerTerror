@@ -123,7 +123,7 @@ public class ComputerOS : MonoBehaviour
         errorBlocked = true;
         windowError.SetActive(true);
       
-        Debug.Log("<color=red>ERROR CRÍTICO:</color> Sistema bloqueado.");
+        Debug.Log("<color=red>ERROR CRÍTICO:</color> Sistema bloqueado."); 
     }
 
     public void CerrarError()

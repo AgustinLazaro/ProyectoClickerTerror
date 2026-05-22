@@ -631,8 +631,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 506fd7a1d4ee51c42bd495d309d3753b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ParanoiaManager
-  currentStamina: 100
-  baseDrainSpeed: 1
+  currentStamina: 10000
+  baseDrainSpeed: 0.25
   timeWithoutBlinking: 0
   penaltyThreshold: 2
   penaltyMultiplier: 5
