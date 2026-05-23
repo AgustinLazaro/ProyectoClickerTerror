@@ -5,17 +5,20 @@ using UnityEngine.SceneManagement;
 public class UIChangeScene : MonoBehaviour
 {
     [Header("Menu Panel")]
+    [SerializeField] private CanvasGroup menuCanvasGroup;
     [SerializeField] private Button playButton;
     [SerializeField] private Button creditsButton;
     [SerializeField] private Button exitButton;
 
     [Header("Credits Panel")]
-    [SerializeField] private GameObject panelCredits;
+    [SerializeField] private CanvasGroup creditsCanvasGroup;
     [SerializeField] private Button creditsBackButton;
 
     public void Awake()
     {
         AddButtonsListeners();
+        SetStateCanvasGroup(menuCanvasGroup, true);
+        SetStateCanvasGroup(creditsCanvasGroup, false);
     }
 
     private void AddButtonsListeners()
@@ -29,12 +32,14 @@ public class UIChangeScene : MonoBehaviour
     private void OnPlayClicked()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(1);
     }
 
     private void OnCreditsClicked()
     {
-        panelCredits.SetActive(true);
+        SetStateCanvasGroup(menuCanvasGroup, false);
+        SetStateCanvasGroup(creditsCanvasGroup, true);
+        //creditsCanvasGroup.SetActive(true);
     }
 
     private void OnExitClicked()
@@ -47,10 +52,19 @@ public class UIChangeScene : MonoBehaviour
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
     }
+    private void SetStateCanvasGroup(CanvasGroup canvasGroup, bool state)
+    {
+        // Activa o desactiva visibilidad e interacción de un panel
+        canvasGroup.alpha = state ? 1 : 0;
+        canvasGroup.interactable = state;
+        canvasGroup.blocksRaycasts = state;
+    }
 
     private void OnCreditsBackClicked()
     {
-        panelCredits.SetActive(false);
+        SetStateCanvasGroup(menuCanvasGroup, true);
+        SetStateCanvasGroup(creditsCanvasGroup, false);
+        //creditsCanvasGroup.SetActive(false);
     }
 
     public void OnDestroy()

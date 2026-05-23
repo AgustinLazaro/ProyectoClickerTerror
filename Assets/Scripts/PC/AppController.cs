@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +26,19 @@ public class AppController : MonoBehaviour
     [SerializeField] private Button closeButton3;
     [SerializeField] private Button closeButton4;
 
+    [Header("Close buttons")]
+    [SerializeField] private float cooldownApp1 = 10f;
+    [SerializeField] private float cooldownApp2 = 10f;
+    [SerializeField] private float cooldownApp3 = 10f;
+    [SerializeField] private float cooldownApp4 = 10f;
+
+    [Header("Cooldown Texts")]
+    [SerializeField] private TextMeshProUGUI cooldownText1;
+    [SerializeField] private TextMeshProUGUI cooldownText2;
+    [SerializeField] private TextMeshProUGUI cooldownText3;
+    [SerializeField] private TextMeshProUGUI cooldownText4;
+
+
     [Header("Fade")]
     [SerializeField] private float fadeDuration = 0.3f;
 
@@ -37,6 +51,7 @@ public class AppController : MonoBehaviour
         AddButtonsListeners();
         SetStateCanvasGroup(homeScreen, true);
         CloseAllWindows();
+        HideAllCooldownTexts();
     }
 
     private void AddButtonsListeners()
@@ -77,6 +92,8 @@ public class AppController : MonoBehaviour
         currentApp.GetComponent<IApp>()?.OnAppClose();
         audioManager.PlayClose();
 
+        StartCooldown(currentApp);
+
         StartCoroutine(FadeOut(currentApp));
         StartCoroutine(FadeIn(homeScreen));
 
@@ -84,6 +101,43 @@ public class AppController : MonoBehaviour
 
         //SetStateCanvasGroup(currentApp, false);
         //SetStateCanvasGroup(homeScreen, true);
+    }
+
+    private void StartCooldown(CanvasGroup app)
+    {
+        if (app == app1Window)
+            StartCoroutine(Cooldown(app1Button, cooldownApp1, cooldownText1));
+        else if (app == app2Window)
+            StartCoroutine(Cooldown(app2Button, cooldownApp2, cooldownText2));
+        else if (app == app3Window)
+            StartCoroutine(Cooldown(app3Button, cooldownApp3, cooldownText3));
+        else if (app == app4Window)
+            StartCoroutine(Cooldown(app4Button, cooldownApp4, cooldownText4));
+    }
+
+    private IEnumerator Cooldown(Button button, float duration, TextMeshProUGUI text)
+    {
+        button.interactable = false;
+        text.gameObject.SetActive(true);
+
+        float timeLeft = duration;
+        while (timeLeft > 0f)
+        {
+            text.text = $"{Mathf.CeilToInt(timeLeft)}";
+            timeLeft -= Time.deltaTime;
+            yield return null;
+        }
+
+        button.interactable = true;
+        text.gameObject.SetActive(false);
+    }
+
+    private void HideAllCooldownTexts()
+    {
+        cooldownText1.gameObject.SetActive(false);
+        cooldownText2.gameObject.SetActive(false);
+        cooldownText3.gameObject.SetActive(false);
+        cooldownText4.gameObject.SetActive(false);
     }
 
     private IEnumerator FadeIn(CanvasGroup canvasGroup)

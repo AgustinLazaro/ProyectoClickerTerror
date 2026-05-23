@@ -1,42 +1,121 @@
 using UnityEngine;
+using System.Collections;
 
 public class PCInteraction : MonoBehaviour
 {
-    [Header("Configurationn")]
-    [SerializeField] private float distanceMax = 3f;
-    [SerializeField] private Canvas pcCanvas;
-    [SerializeField] private Transform player;
+    [Header("Configuration")]
+    [SerializeField] private float zoomSpeed = 2f;
+    //[SerializeField] private float distanceMax = 3f;
 
+    [Header("References")]
+    [SerializeField] private Transform playerCamera;
+    [SerializeField] private Transform zoomPoint;
+    [SerializeField] private Canvas pcCanvas;
+    [SerializeField] private PlayerMovementLazaro playerMovement; //LAZARO
+    [SerializeField] private MouseLook mouseLook;                 //LAZARO
+    //[SerializeField] private CameraLookMarian cameraLook;
+
+    private Vector3 originalCameraPosition;
+    private Quaternion originalCameraRotation;
     private bool isPCActive = false;
+    private bool inTransition = false;
+
+    public bool IsPCActive => isPCActive;
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-            TryInteraction();
+        if (inTransition) return;
+        if (isPCActive && Input.GetKeyDown(KeyCode.Escape))
+            DeactivePC();
     }
 
-    private void TryInteraction()
+    public void ActivePC()
     {
-        // verifica distance
-        float distance = Vector3.Distance(player.position, transform.position);
-        if (distance > distanceMax) return;
+        //playerMovement.enabled = false;
+        if (isPCActive || inTransition) return;
 
-        // lanza raycast desde el centro de la pantalla
-        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
-        if (Physics.Raycast(ray, out RaycastHit hit, distanceMax))
+        originalCameraPosition = playerCamera.position;
+        originalCameraRotation = playerCamera.rotation;
+
+        playerMovement.isSitting = true;
+        mouseLook.enabled = false;
+        //cameraLook.enabled = false;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        StartCoroutine(ZoomIntoMonitor());
+    }
+    public void DeactivePC()
+    {
+        //playerMovement.enabled = true;
+        if (!isPCActive || inTransition) return;
+
+        pcCanvas.gameObject.SetActive(false);
+        StartCoroutine(ZoomFromMonitor());
+    }
+
+    private IEnumerator ZoomIntoMonitor()
+    {
+        inTransition = true;
+
+        while(Vector3.Distance(playerCamera.position, zoomPoint.position) > 0.01f)
         {
-            if (hit.collider.gameObject == gameObject)
-                PCActive();
+            playerCamera.position = Vector3.Lerp(
+                    playerCamera.position,
+                    zoomPoint.position,
+                    Time.deltaTime * zoomSpeed
+                );
+            playerCamera.rotation = Quaternion.Lerp(
+                playerCamera.rotation,
+                zoomPoint.rotation,
+                Time.deltaTime * zoomSpeed
+                );
+            yield return null;
         }
+
+        playerCamera.position = zoomPoint.position;
+        playerCamera.rotation = zoomPoint.rotation;
+
+        pcCanvas.gameObject.SetActive(true);
+        isPCActive = true;
+        inTransition = false;
     }
 
-    private void PCActive()
+    private IEnumerator ZoomFromMonitor()
     {
-        isPCActive = !isPCActive;
-        pcCanvas.gameObject.SetActive(isPCActive);
+        inTransition = true;
+        isPCActive = false;
 
-        // bloquea o libera el cursor
-        Cursor.lockState = isPCActive ? CursorLockMode.None : CursorLockMode.Locked;
-        Cursor.visible = isPCActive;
+        while (Vector3.Distance(playerCamera.position, originalCameraPosition) > 0.01f)
+        {
+            playerCamera.position = Vector3.Lerp(
+                    playerCamera.position,
+                    originalCameraPosition,
+                    Time.deltaTime * zoomSpeed
+                );
+            playerCamera.rotation = Quaternion.Lerp(
+                playerCamera.rotation,
+                originalCameraRotation,
+                Time.deltaTime * zoomSpeed
+                );
+            yield return null;
+        }
+
+        playerCamera.position = originalCameraPosition;
+        playerCamera.rotation = originalCameraRotation;
+
+        //reactivo scripts de LAZARO
+        playerMovement.isSitting = false;
+        mouseLook.enabled = true;
+        //cameraLook.enabled = true;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        inTransition = false;
+
+        ////playerMovement.enabled = true;
+        ////mouseLook.enabled = true;
     }
 }

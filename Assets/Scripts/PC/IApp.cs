@@ -1,3 +1,6 @@
+//using TMPro;
+//using UnityEngine;
+
 using UnityEngine;
 
 public interface IApp
@@ -6,286 +9,113 @@ public interface IApp
     void OnAppClose();
 }
 
-//using UnityEngine;
-//using UnityEngine.UI;
-//using System.Collections;
 
-//public class AppController : MonoBehaviour
+//public class PCInteraction : MonoBehaviour
 //{
-//    [Header("Home")]
-//    [SerializeField] private CanvasGroup homeScreen;
+//    [Header("Configuracion")]
+//    [SerializeField] private float velocidadZoom = 2f;
 
-//    [Header("Botones de íconos")]
-//    [SerializeField] private Button app1Button;
-//    [SerializeField] private Button app2Button;
-//    [SerializeField] private Button app3Button;
-//    [SerializeField] private Button app4Button;
+//    [Header("Referencias")]
+//    [SerializeField] private Transform camaraJugador;
+//    [SerializeField] private Transform puntoZoom;
+//    [SerializeField] private GameObject pcCanvas;
+//    [SerializeField] private PlayerMovement playerMovement;
+//    [SerializeField] private CameraLook cameraLook;
 
-//    [Header("Ventanas")]
-//    [SerializeField] private CanvasGroup app1Window;
-//    [SerializeField] private CanvasGroup app2Window;
-//    [SerializeField] private CanvasGroup app3Window;
-//    [SerializeField] private CanvasGroup app4Window;
+//    private Vector3 posicionOriginalCamara;
+//    private Quaternion rotacionOriginalCamara;
+//    private bool pcActiva = false;
+//    private bool enTransicion = false;
 
-//    [Header("Botones de cerrar")]
-//    [SerializeField] private Button closeButton1;
-//    [SerializeField] private Button closeButton2;
-//    [SerializeField] private Button closeButton3;
-//    [SerializeField] private Button closeButton4;
+//    public bool PcActiva => pcActiva;
 
-//    [Header("Fade")]
-//    [SerializeField] private float fadeDuration = 0.3f;
-
-//    private CanvasGroup currentApp = null;
-
-//    private void Awake()
+//    private void Update()
 //    {
-//        AddButtonsListeners();
-//        SetStateCanvasGroup(homeScreen, true);
-//        CloseAllWindows();
+//        if (enTransicion) return;
+//        if (pcActiva && Input.GetKeyDown(KeyCode.Escape))
+//            DesactivarPC();
 //    }
 
-//    private void AddButtonsListeners()
+//    public void ActivarPC()
 //    {
-//        app1Button.onClick.AddListener(() => OpenApp(app1Window));
-//        app2Button.onClick.AddListener(() => OpenApp(app2Window));
-//        app3Button.onClick.AddListener(() => OpenApp(app3Window));
-//        app4Button.onClick.AddListener(() => OpenApp(app4Window));
+//        if (pcActiva || enTransicion) return;
 
-//        closeButton1.onClick.AddListener(CloseCurrentApp);
-//        closeButton2.onClick.AddListener(CloseCurrentApp);
-//        closeButton3.onClick.AddListener(CloseCurrentApp);
-//        closeButton4.onClick.AddListener(CloseCurrentApp);
+//        posicionOriginalCamara = camaraJugador.position;
+//        rotacionOriginalCamara = camaraJugador.rotation;
+
+//        playerMovement.isSitting = true;
+//        cameraLook.enabled = false;
+
+//        Cursor.lockState = CursorLockMode.None;
+//        Cursor.visible = true;
+
+//        StartCoroutine(ZoomHaciaMonitor());
 //    }
 
-//    private void OpenApp(CanvasGroup app)
+//    public void DesactivarPC()
 //    {
-//        if (currentApp == app) return;
+//        if (!pcActiva || enTransicion) return;
 
-//        CloseCurrentApp();
-
-//        currentApp = app;
-//        StartCoroutine(FadeIn(app));
-//        StartCoroutine(FadeOut(homeScreen));
-
-//        app.GetComponent<IApp>()?.OnAppOpen();
+//        pcCanvas.SetActive(false);
+//        StartCoroutine(ZoomDesdeMonitor());
 //    }
 
-//    public void CloseCurrentApp()
+//    private IEnumerator ZoomHaciaMonitor()
 //    {
-//        if (currentApp == null) return;
+//        enTransicion = true;
 
-//        currentApp.GetComponent<IApp>()?.OnAppClose();
-
-//        StartCoroutine(FadeOut(currentApp));
-//        StartCoroutine(FadeIn(homeScreen));
-
-//        currentApp = null;
-//    }
-
-//    private IEnumerator FadeIn(CanvasGroup cg)
-//    {
-//        cg.interactable = true;
-//        cg.blocksRaycasts = true;
-
-//        float tiempo = 0f;
-//        while (tiempo < fadeDuration)
+//        while (Vector3.Distance(camaraJugador.position, puntoZoom.position) > 0.01f)
 //        {
-//            tiempo += Time.deltaTime;
-//            cg.alpha = Mathf.Clamp01(tiempo / fadeDuration);
-//            yield return null;
-//        }
-//        cg.alpha = 1f;
-//    }
-
-//    private IEnumerator FadeOut(CanvasGroup cg)
-//    {
-//        float tiempo = 0f;
-//        while (tiempo < fadeDuration)
-//        {
-//            tiempo += Time.deltaTime;
-//            cg.alpha = Mathf.Clamp01(1f - tiempo / fadeDuration);
+//            camaraJugador.position = Vector3.Lerp(
+//                camaraJugador.position,
+//                puntoZoom.position,
+//                Time.deltaTime * velocidadZoom
+//            );
+//            camaraJugador.rotation = Quaternion.Lerp(
+//                camaraJugador.rotation,
+//                puntoZoom.rotation,
+//                Time.deltaTime * velocidadZoom
+//            );
 //            yield return null;
 //        }
 
-//        cg.alpha = 0f;
-//        cg.interactable = false;
-//        cg.blocksRaycasts = false;
+//        camaraJugador.position = puntoZoom.position;
+//        camaraJugador.rotation = puntoZoom.rotation;
+
+//        pcCanvas.SetActive(true);
+//        pcActiva = true;
+//        enTransicion = false;
 //    }
 
-//    private void SetStateCanvasGroup(CanvasGroup cg, bool state)
+//    private IEnumerator ZoomDesdeMonitor()
 //    {
-//        cg.alpha = state ? 1f : 0f;
-//        cg.interactable = state;
-//        cg.blocksRaycasts = state;
-//    }
+//        enTransicion = true;
+//        pcActiva = false;
 
-//    private void CloseAllWindows()
-//    {
-//        SetStateCanvasGroup(app1Window, false);
-//        SetStateCanvasGroup(app2Window, false);
-//        SetStateCanvasGroup(app3Window, false);
-//        SetStateCanvasGroup(app4Window, false);
-//    }
-
-//    private void OnDestroy()
-//    {
-//        app1Button.onClick.RemoveAllListeners();
-//        app2Button.onClick.RemoveAllListeners();
-//        app3Button.onClick.RemoveAllListeners();
-//        app4Button.onClick.RemoveAllListeners();
-
-//        closeButton1.onClick.RemoveAllListeners();
-//        closeButton2.onClick.RemoveAllListeners();
-//        closeButton3.onClick.RemoveAllListeners();
-//        closeButton4.onClick.RemoveAllListeners();
-//    }
-//}
-
-
-
-
-
-
-//using UnityEngine;
-//using UnityEngine.UI;
-//using System.Collections;
-
-//public class AppController : MonoBehaviour
-//{
-//    [Header("Home")]
-//    [SerializeField] private CanvasGroup homeScreen;
-
-//    [Header("App Buttons")]
-//    [SerializeField] private Button app1Button;
-//    [SerializeField] private Button app2Button;
-//    [SerializeField] private Button app3Button;
-//    [SerializeField] private Button app4Button;
-
-//    [Header("Windows")]
-//    [SerializeField] private CanvasGroup app1Window;
-//    [SerializeField] private CanvasGroup app2Window;
-//    [SerializeField] private CanvasGroup app3Window;
-//    [SerializeField] private CanvasGroup app4Window;
-
-//    [Header("Close Buttons")]
-//    [SerializeField] private Button closeButton1;
-//    [SerializeField] private Button closeButton2;
-//    [SerializeField] private Button closeButton3;
-//    [SerializeField] private Button closeButton4;
-
-//    [Header("Fade")]
-//    [SerializeField] private float fadeDuration = 0.3f;  // único campo nuevo
-
-//    private CanvasGroup currentApp = null;
-
-//    private void Awake()
-//    {
-//        AddButtonsListeners();
-//        SetStateCanvasGroup(homeScreen, true);
-//        CloseAllWindows();
-//    }
-
-//    private void AddButtonsListeners()
-//    {
-//        app1Button.onClick.AddListener(() => OpenApp(app1Window));
-//        app2Button.onClick.AddListener(() => OpenApp(app2Window));
-//        app3Button.onClick.AddListener(() => OpenApp(app3Window));
-//        app4Button.onClick.AddListener(() => OpenApp(app4Window));
-
-//        closeButton1.onClick.AddListener(CloseCurrentApp);
-//        closeButton2.onClick.AddListener(CloseCurrentApp);
-//        closeButton3.onClick.AddListener(CloseCurrentApp);
-//        closeButton4.onClick.AddListener(CloseCurrentApp);
-//    }
-
-//    private void OpenApp(CanvasGroup app)
-//    {
-//        if (currentApp == app) return;
-
-//        CloseCurrentApp();
-
-//        currentApp = app;
-//        app.GetComponent<IApp>()?.OnAppOpen();
-//        AudioManager.Instance.PlayOpen();
-
-//        StartCoroutine(FadeOut(homeScreen));
-//        StartCoroutine(FadeIn(app));
-//    }
-
-//    public void CloseCurrentApp()
-//    {
-//        if (currentApp == null) return;
-
-//        currentApp.GetComponent<IApp>()?.OnAppClose();
-//        AudioManager.Instance.PlayClose();
-
-//        StartCoroutine(FadeOut(currentApp));
-//        StartCoroutine(FadeIn(homeScreen));
-
-//        currentApp = null;
-//    }
-
-//    private IEnumerator FadeIn(CanvasGroup cg)
-//    {
-//        cg.interactable = true;
-//        cg.blocksRaycasts = true;
-
-//        float tiempo = 0f;
-//        while (tiempo < fadeDuration)
+//        while (Vector3.Distance(camaraJugador.position, posicionOriginalCamara) > 0.01f)
 //        {
-//            tiempo += Time.deltaTime;
-//            cg.alpha = Mathf.Clamp01(tiempo / fadeDuration);
-//            yield return null;
-//        }
-//        cg.alpha = 1f;
-//    }
-
-//    private IEnumerator FadeOut(CanvasGroup cg)
-//    {
-//        float tiempo = 0f;
-//        while (tiempo < fadeDuration)
-//        {
-//            tiempo += Time.deltaTime;
-//            cg.alpha = Mathf.Clamp01(1f - tiempo / fadeDuration);
+//            camaraJugador.position = Vector3.Lerp(
+//                camaraJugador.position,
+//                posicionOriginalCamara,
+//                Time.deltaTime * velocidadZoom
+//            );
+//            camaraJugador.rotation = Quaternion.Lerp(
+//                camaraJugador.rotation,
+//                rotacionOriginalCamara,
+//                Time.deltaTime * velocidadZoom
+//            );
 //            yield return null;
 //        }
 
-//        cg.alpha = 0f;
-//        cg.interactable = false;
-//        cg.blocksRaycasts = false;
-//    }
+//        camaraJugador.position = posicionOriginalCamara;
+//        camaraJugador.rotation = rotacionOriginalCamara;
 
-//    private void CloseAllWindows()
-//    {
-//        SetStateCanvasGroup(app1Window, false);
-//        SetStateCanvasGroup(app2Window, false);
-//        SetStateCanvasGroup(app3Window, false);
-//        SetStateCanvasGroup(app4Window, false);
-//    }
+//        playerMovement.isSitting = false;
+//        cameraLook.enabled = true;
 
-//    private void SetStateCanvasGroup(CanvasGroup cg, bool state)
-//    {
-//        cg.alpha = state ? 1f : 0f;
-//        cg.interactable = state;
-//        cg.blocksRaycasts = state;
-//    }
+//        Cursor.lockState = CursorLockMode.Locked;
+//        Cursor.visible = false;
 
-//    private void OnDestroy()
-//    {
-//        RemoveButtonsListeners();
-//    }
-
-//    private void RemoveButtonsListeners()
-//    {
-//        app1Button.onClick.RemoveAllListeners();
-//        app2Button.onClick.RemoveAllListeners();
-//        app3Button.onClick.RemoveAllListeners();
-//        app4Button.onClick.RemoveAllListeners();
-
-//        closeButton1.onClick.RemoveAllListeners();
-//        closeButton2.onClick.RemoveAllListeners();
-//        closeButton3.onClick.RemoveAllListeners();
-//        closeButton4.onClick.RemoveAllListeners();
+//        enTransicion = false;
 //    }
 //}

@@ -79,7 +79,7 @@ public class UIPause : MonoBehaviour
     private void ExitGame()
     {
         // Carga la escena del menú principal.
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(0);
     }
 
     private void OnSettingsBackClicked()
