@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.Rendering; // NECESARIO PARA MANEJAR LOS VOLUMES
+using UnityEngine.Rendering;
+using System.Runtime.CompilerServices; // NECESARIO PARA MANEJAR LOS VOLUMES
 
 public class ParanoiaManager : MonoBehaviour
 {
@@ -19,17 +20,24 @@ public class ParanoiaManager : MonoBehaviour
     public Volume volumeFase1;
     public Volume volumeFase2;
     public Volume volumeFase3;
-    public float velocidadTransicion = 1.5f; // Qué tan rápido cambia el efecto
+    public float speedTransition = 1.5f; // Qué tan rápido cambia el efecto
 
     private int paranoiaPhase = 0;
 
     [Header("Cámara y FOV")]
-    public Camera camaraJugador; // Arrastrá tu Main Camera acá
+    public Camera playerCamera; // Arrastrá tu Main Camera acá
     public float fovNormal = 60f; // El FOV normal de tu juego
     public float fovCritico = 110f; // El FOV para el pasillo estirado
     public float velocidadFov = 20f; // Qué tan rápido se estira la cámara
 
-    void Start()
+    [SerializeField] GameManagerMarian managerMarian;
+
+    private void Awake()
+    {
+        managerMarian = FindAnyObjectByType<GameManagerMarian>();
+    }
+
+    private void Start()
     {
         if (blackScreenUI != null)
         {
@@ -42,7 +50,7 @@ public class ParanoiaManager : MonoBehaviour
         if (volumeFase3 != null) volumeFase3.weight = 0f;
     }
 
-    void Update()
+    private void Update()
     {
         // 1. Lógica del parpadeo
         timeWithoutBlinking += Time.deltaTime;
@@ -61,12 +69,16 @@ public class ParanoiaManager : MonoBehaviour
         currentStamina -= (currentDrainSpeed * Time.deltaTime);
         currentStamina = Mathf.Clamp(currentStamina, 0f, 100f);
 
+        //conexion nueva (MARIAN)
+        if (currentStamina <= 0f)
+            managerMarian.GameOver();
+            
         // 3. Actualizamos las fases y luego mezclamos los efectos visuales
         UpdateParanoiaEvents();
-        ActualizarEfectosVisuales();
+        UpdateVFX();
     }
 
-    void UpdateParanoiaEvents()
+    private void UpdateParanoiaEvents()
     {
         // FASE 0: Normal (Entre 100 y 60)
         if (currentStamina >= 60f && paranoiaPhase != 0)
@@ -97,7 +109,7 @@ public class ParanoiaManager : MonoBehaviour
         }
     }
 
-    void ActualizarEfectosVisuales()
+    private void UpdateVFX()
     {
         // Determinamos qué peso (Weight) debería tener cada volumen según la fase actual.
         // Solo el volumen de la fase actual va a ir hacia 1, el resto va hacia 0.
@@ -107,22 +119,22 @@ public class ParanoiaManager : MonoBehaviour
 
         // Mathf.MoveTowards cambia el valor de a poquito cada frame, creando el "crossfade" (mezcla suave)
         if (volumeFase1 != null)
-            volumeFase1.weight = Mathf.MoveTowards(volumeFase1.weight, targetFase1, velocidadTransicion * Time.deltaTime);
+            volumeFase1.weight = Mathf.MoveTowards(volumeFase1.weight, targetFase1, speedTransition * Time.deltaTime);
 
         if (volumeFase2 != null)
-            volumeFase2.weight = Mathf.MoveTowards(volumeFase2.weight, targetFase2, velocidadTransicion * Time.deltaTime);
+            volumeFase2.weight = Mathf.MoveTowards(volumeFase2.weight, targetFase2, speedTransition * Time.deltaTime);
 
         if (volumeFase3 != null)
-            volumeFase3.weight = Mathf.MoveTowards(volumeFase3.weight, targetFase3, velocidadTransicion * Time.deltaTime);
+            volumeFase3.weight = Mathf.MoveTowards(volumeFase3.weight, targetFase3, speedTransition * Time.deltaTime);
 
         // --- LÓGICA DEL FOV (CÁMARA) ---
-        if (camaraJugador != null)
+        if (playerCamera != null)
         {
             // Si estamos en fase 3, el objetivo es el FOV crítico. Si no, vuelve al normal.
             float fovObjetivo = (paranoiaPhase == 3) ? fovCritico : fovNormal;
 
             // Hacemos la transición suave del FOV
-            camaraJugador.fieldOfView = Mathf.MoveTowards(camaraJugador.fieldOfView, fovObjetivo, velocidadFov * Time.deltaTime);
+            playerCamera.fieldOfView = Mathf.MoveTowards(playerCamera.fieldOfView, fovObjetivo, velocidadFov * Time.deltaTime);
         }
     }
 
@@ -146,8 +158,6 @@ public class ParanoiaManager : MonoBehaviour
         Debug.Log("Stamina refilled! Ahora tenés: " + currentStamina);
     }
 }
-
-
 
 
 // NOTAs: 

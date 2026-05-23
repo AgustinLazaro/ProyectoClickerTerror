@@ -57,7 +57,6 @@ public class ComputerOS : MonoBehaviour
 
     public void OpenWindow(GameObject window)
     {
-        
         if (errorBlocked)
         {
             Debug.LogWarning("Sistema bloqueado. Debes cerrar el error primero.");

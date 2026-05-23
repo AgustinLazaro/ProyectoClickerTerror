@@ -15,7 +15,7 @@ public class UIResultScreen : MonoBehaviour
     [SerializeField] private Button victoryMainMenuButton;
 
     [Header("Managers")]
-    [SerializeField] private GameManagerMarian gameManager;
+    [SerializeField] private GameManagerMarian managerMarian;
 
     private void Awake()
     {
@@ -27,18 +27,18 @@ public class UIResultScreen : MonoBehaviour
     private void OnEnable()
     {
         // Suscribe los eventos del GameManager.
-        if (gameManager != null)
+        if (managerMarian != null)
         {
-            gameManager.OnGameOver += ShowGameOverScreen;
-            gameManager.OnVictory += ShowVictoryScreen;
+            managerMarian.OnGameOver += ShowGameOverScreen;
+            managerMarian.OnVictory += ShowVictoryScreen;
         }
     }
 
     private void OnDisable()
     {
         // Desuscribe los eventos para evitar errores.
-        gameManager.OnGameOver -= ShowGameOverScreen;
-        gameManager.OnVictory -= ShowVictoryScreen;
+        managerMarian.OnGameOver -= ShowGameOverScreen;
+        managerMarian.OnVictory -= ShowVictoryScreen;
     }
 
     private void OnDestroy()
