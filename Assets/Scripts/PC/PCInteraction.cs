@@ -31,13 +31,13 @@ public class PCInteraction : MonoBehaviour
 
     public void ActivePC()
     {
-        //playerMovement.enabled = false;
         if (isPCActive || inTransition) return;
 
         originalCameraPosition = playerCamera.position;
         originalCameraRotation = playerCamera.rotation;
 
-        playerMovement.isSitting = true;
+        // Apagamos el movimiento y la rotación del jugador
+        playerMovement.enabled = false;
         mouseLook.enabled = false;
         //cameraLook.enabled = false;
 
@@ -46,9 +46,9 @@ public class PCInteraction : MonoBehaviour
 
         StartCoroutine(ZoomIntoMonitor());
     }
+
     public void DeactivePC()
     {
-        //playerMovement.enabled = true;
         if (!isPCActive || inTransition) return;
 
         pcCanvas.gameObject.SetActive(false);
@@ -59,7 +59,7 @@ public class PCInteraction : MonoBehaviour
     {
         inTransition = true;
 
-        while(Vector3.Distance(playerCamera.position, zoomPoint.position) > 0.01f)
+        while (Vector3.Distance(playerCamera.position, zoomPoint.position) > 0.01f)
         {
             playerCamera.position = Vector3.Lerp(
                     playerCamera.position,
@@ -89,12 +89,14 @@ public class PCInteraction : MonoBehaviour
 
         while (Vector3.Distance(playerCamera.position, originalCameraPosition) > 0.01f)
         {
-            playerCamera.position = Vector3.Lerp(
+            playerCamera.position = Vector3.Lerp
+                (
                     playerCamera.position,
                     originalCameraPosition,
                     Time.deltaTime * zoomSpeed
                 );
-            playerCamera.rotation = Quaternion.Lerp(
+            playerCamera.rotation = Quaternion.Lerp
+                (
                 playerCamera.rotation,
                 originalCameraRotation,
                 Time.deltaTime * zoomSpeed
@@ -105,8 +107,8 @@ public class PCInteraction : MonoBehaviour
         playerCamera.position = originalCameraPosition;
         playerCamera.rotation = originalCameraRotation;
 
-        //reactivo scripts de LAZARO
-        playerMovement.isSitting = false;
+        // Reactivamos scripts de LAZARO
+        playerMovement.enabled = true;
         mouseLook.enabled = true;
         //cameraLook.enabled = true;
 
@@ -114,8 +116,5 @@ public class PCInteraction : MonoBehaviour
         Cursor.visible = false;
 
         inTransition = false;
-
-        ////playerMovement.enabled = true;
-        ////mouseLook.enabled = true;
     }
 }
