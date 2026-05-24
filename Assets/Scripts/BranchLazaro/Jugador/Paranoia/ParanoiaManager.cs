@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Rendering;
-using System.Runtime.CompilerServices; // NECESARIO PARA MANEJAR LOS VOLUMES
+using System.Runtime.CompilerServices; 
 
 public class ParanoiaManager : MonoBehaviour
 {
@@ -20,15 +20,15 @@ public class ParanoiaManager : MonoBehaviour
     public Volume volumeFase1;
     public Volume volumeFase2;
     public Volume volumeFase3;
-    public float speedTransition = 1.5f; // Qué tan rápido cambia el efecto
+    public float speedTransition = 1.5f; 
 
     private int paranoiaPhase = 0;
 
     [Header("Cámara y FOV")]
-    public Camera playerCamera; // Arrastrá tu Main Camera acá
-    public float fovNormal = 60f; // El FOV normal de tu juego
-    public float fovCritico = 110f; // El FOV para el pasillo estirado
-    public float velocidadFov = 20f; // Qué tan rápido se estira la cámara
+    public Camera playerCamera; 
+    public float fovNormal = 60f; 
+    public float fovCritico = 110f; 
+    public float velocidadFov = 20f; 
 
     [SerializeField] GameManagerMarian managerMarian;
 
@@ -44,7 +44,7 @@ public class ParanoiaManager : MonoBehaviour
             blackScreenUI.SetActive(false);
         }
 
-        // Nos aseguramos de que todos los efectos extra arranquen apagados (Weight = 0)
+        
         if (volumeFase1 != null) volumeFase1.weight = 0f;
         if (volumeFase2 != null) volumeFase2.weight = 0f;
         if (volumeFase3 != null) volumeFase3.weight = 0f;
@@ -52,14 +52,14 @@ public class ParanoiaManager : MonoBehaviour
 
     private void Update()
     {
-        // 1. Lógica del parpadeo
+        
         timeWithoutBlinking += Time.deltaTime;
         if (Input.GetKeyDown(KeyCode.Space) && !isBlinking)
         {
             StartCoroutine(BlinkRoutine());
         }
 
-        // 2. Lógica del drenaje de estamina
+        
         float currentDrainSpeed = baseDrainSpeed;
         if (timeWithoutBlinking > penaltyThreshold)
         {
@@ -69,25 +69,25 @@ public class ParanoiaManager : MonoBehaviour
         currentStamina -= (currentDrainSpeed * Time.deltaTime);
         currentStamina = Mathf.Clamp(currentStamina, 0f, 100f);
 
-        //conexion nueva (MARIAN)
+        
         if (currentStamina <= 0f)
             managerMarian.GameOver();
             
-        // 3. Actualizamos las fases y luego mezclamos los efectos visuales
+        
         UpdateParanoiaEvents();
         UpdateVFX();
     }
 
     private void UpdateParanoiaEvents()
     {
-        // FASE 0: Normal (Entre 100 y 60)
+       
         if (currentStamina >= 60f && paranoiaPhase != 0)
         {
             paranoiaPhase = 0;
             Debug.Log(" FASE 0: Todo normal. (Estamina: " + currentStamina.ToString("F0") + ")");
         }
 
-        // FASE 1: Ansiedad (Entre 59 y 30)
+       
         else if (currentStamina >= 30f && currentStamina < 60f && paranoiaPhase != 1)
         {
             paranoiaPhase = 1;
@@ -111,13 +111,12 @@ public class ParanoiaManager : MonoBehaviour
 
     private void UpdateVFX()
     {
-        // Determinamos qué peso (Weight) debería tener cada volumen según la fase actual.
-        // Solo el volumen de la fase actual va a ir hacia 1, el resto va hacia 0.
+        
         float targetFase1 = (paranoiaPhase == 1) ? 1f : 0f;
         float targetFase2 = (paranoiaPhase == 2) ? 1f : 0f;
         float targetFase3 = (paranoiaPhase == 3) ? 1f : 0f;
 
-        // Mathf.MoveTowards cambia el valor de a poquito cada frame, creando el "crossfade" (mezcla suave)
+       
         if (volumeFase1 != null)
             volumeFase1.weight = Mathf.MoveTowards(volumeFase1.weight, targetFase1, speedTransition * Time.deltaTime);
 
@@ -127,13 +126,13 @@ public class ParanoiaManager : MonoBehaviour
         if (volumeFase3 != null)
             volumeFase3.weight = Mathf.MoveTowards(volumeFase3.weight, targetFase3, speedTransition * Time.deltaTime);
 
-        // --- LÓGICA DEL FOV (CÁMARA) ---
+        
         if (playerCamera != null)
         {
-            // Si estamos en fase 3, el objetivo es el FOV crítico. Si no, vuelve al normal.
+            
             float fovObjetivo = (paranoiaPhase == 3) ? fovCritico : fovNormal;
 
-            // Hacemos la transición suave del FOV
+            
             playerCamera.fieldOfView = Mathf.MoveTowards(playerCamera.fieldOfView, fovObjetivo, velocidadFov * Time.deltaTime);
         }
     }
@@ -150,7 +149,7 @@ public class ParanoiaManager : MonoBehaviour
         isBlinking = false;
     }
 
-    // Este es el método que llama la cafetera
+   
     public void RefillStamina(float cantidad)
     {
         currentStamina += cantidad;
@@ -160,13 +159,3 @@ public class ParanoiaManager : MonoBehaviour
 }
 
 
-// NOTAs: 
-
-// ESTAMINA (100 a 0):
-// - Para que el nivel dure 5m:  baseDrainSpeed = 0.33f;
-// - Para que el nivel dure 10m: baseDrainSpeed = 0.16f;
-//
-// PARPADEO (Balance de tensión vs frustración):
-// - Tiempo límite sin parpadear: penaltyThreshold = 12f; (o 15f)
-// - Castigo por olvidarse:  penaltyMultiplier = 3f; (o 4f)
-/////////////////////////////////////////////////////////////////////

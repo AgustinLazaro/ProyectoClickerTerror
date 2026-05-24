@@ -23,7 +23,7 @@ public class UIAudioSettings : MonoBehaviour
 
         PlayerPrefs.SetFloat(parameterName, _value);
 
-        //Conversion a decibelios
+        
         masterMixer.SetFloat(parameterName, Mathf.Log10(_value / 100) * 20f);
     }
 

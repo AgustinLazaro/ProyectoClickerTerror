@@ -5,7 +5,7 @@ using System.Collections;
 
 public class UIButtonFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    //[SerializeField] private UiSoundManager uiSoundManager;
+   
 
     [Header("Buttons")]
     [SerializeField] private Button button;
@@ -15,7 +15,7 @@ public class UIButtonFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     [SerializeField] private float animDuration = 0.5f;
     [SerializeField] private AnimationCurve animationCurve;
 
-    //private Image image;
+   
     private IEnumerator expanding;
 
     private void Awake()
@@ -30,16 +30,16 @@ public class UIButtonFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     private void OnButtonClicked()
     {
-        //uiSoundManager.PlayClick();
+        
         Debug.Log("OnButtonClicked", gameObject);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         Debug.Log("OnPointerEnter", gameObject);
-        //uiSoundManager.PlayHover();
+       
 
-        if (expanding != null)   //entonces Expanding() esta corriendo
+        if (expanding != null)   
             StopCoroutine(expanding);
 
         expanding = Expanding();
@@ -50,7 +50,7 @@ public class UIButtonFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     {
         Debug.Log("OnPointerExit", gameObject);
 
-        if (expanding != null)   //entonces Collaping() esta corriendo
+        if (expanding != null)  
             StopCoroutine(expanding);
 
         expanding = Collapsing();

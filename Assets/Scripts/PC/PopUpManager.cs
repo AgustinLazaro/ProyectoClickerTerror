@@ -29,7 +29,7 @@ public class PopUpManager : MonoBehaviour
 
     private void Update()
     {
-        if (_currentPopUp != null) return;    // ya hay uno visible, espera
+        if (_currentPopUp != null) return;    
 
         _nextTimePopUp -= Time.deltaTime;
 
@@ -45,7 +45,7 @@ public class PopUpManager : MonoBehaviour
         _currentPopUp = Instantiate(popUpPrefab, popUpContainer);
         _currentPopUp.GetComponent<PopUp>().Inicialize(mensaje, this);
 
-        // posicion aleatoria dentro del container
+       
         RectTransform rect = _currentPopUp.GetComponent<RectTransform>();
         rect.anchoredPosition = new Vector2(
             Random.Range(-300f, 300f),

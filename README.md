@@ -1,2 +1,245 @@
 # ProyectoClickerTerror
 Trabajo Cuatrimestral- ImageCampus 
+
+itch io : https://agustinlazaro.itch.io/insomnia
+
+
+TUTORIAL
+
+================================================================
+
+                    CLICKER TERROR
+
+                    HOW TO PLAY
+
+================================================================
+
+OBJECTIVE
+
+----------------------------------------------------------------
+
+Survive inside the house long enough by collecting points
+
+through the PC minigames. When the timer runs out, if you
+
+have enough points, you can escape and win.
+
+But be careful... something is watching you.
+
+================================================================
+
+CONTROLS
+
+================================================================
+
+MOVEMENT
+
+  W / A / S / D       Walk
+
+  Mouse               Look around
+
+  E                   Sit down, Stand up / Exit the PC
+
+ACTIONS
+
+  Left Click          Interact with objects and with the PC
+
+  Right Click         Use item (e.g. coffee cup)
+
+  Space               Blink
+
+================================================================
+
+CORE MECHANICS
+
+================================================================
+
+STAMINA (PARANOIA)
+
+  - Your stamina drains constantly over time.
+
+  - If you forget to blink (Space) regularly, it drains faster.
+
+  - Drinking coffee restores stamina.
+
+  - If stamina reaches 0... you lose.
+
+  - The lower your stamina, the stronger the effects
+
+    and the greater the danger.
+
+================================================================
+
+PARANOIA PHASES
+
+================================================================
+
+  PHASE 0 — NORMAL (100% - 70% stamina)
+
+  Everything is calm. Explore, use the PC, collect points.
+
+  Use this time to get familiar with the environment.
+
+  PHASE 1 — ANXIETY (70% - 50% stamina)
+
+  You start hearing whispers and unexplained sounds.
+
+  No immediate danger, but it's a warning.
+
+  Tip: look for coffee before your stamina drops further.
+
+  PHASE 2 — PARANOIA (50% - 20% stamina)
+
+  The enemy appears. It can show up in 3 different locations
+
+  around the house. Looking directly at it drains your stamina.
+
+  Whispers continue.
+
+  Tip: avoid direct eye contact with the enemy.
+
+       Learn the 3 locations where it can appear.
+
+  PHASE 3 — CRITICAL (20% - 0% stamina)
+
+  Maximum danger. Everything stacks:
+
+  whispers + visible enemy + deadly countdown.
+
+  If you don't restore stamina quickly, the enemy
+
+  will let out a scream and catch you. No second chances.
+
+  Tip: the moment you enter this phase, drop everything
+
+       and find coffee immediately.
+
+================================================================
+
+TIMER
+
+================================================================
+
+  - You have a time limit to accumulate points.
+
+  - When the timer runs out, if you have enough points
+
+    you can win.
+
+  - If you don't have enough points when time runs out,
+
+    you lose.
+
+================================================================
+
+SCORE
+
+================================================================
+
+  - You earn points by completing minigames on the PC.
+
+  - Each minigame has a cooldown before you can
+
+    play it again.
+
+================================================================
+
+MINIGAMES (PC)
+
+================================================================
+
+  APP 1 — FAST CLICK
+
+  Reach the target number of clicks before time runs out.
+
+  Tip: click as fast as you can without losing focus.
+
+  APP 2 — DRAG OBJECT
+
+  Drag the object to the target zone before time runs out.
+
+  Tip: release the object precisely over the marked zone.
+
+  APP 3 — AVOID CLICK
+
+  Correct and incorrect objects appear randomly.
+
+  Click only the correct ones. One wrong click = game over.
+
+  Tip: wait to identify the object clearly before clicking.
+
+  APP 4 — TIMING
+
+  A bar oscillates from side to side. Stop it in the green zone.
+
+  Tip: anticipate the movement and click slightly early.
+
+================================================================
+
+ENVIRONMENT OBJECTS
+
+================================================================
+
+  COFFEE MAKER
+
+  Interact with it to grab the coffee pot.
+
+  Then fill the cup and drink it to restore stamina.
+
+  COFFEE CUP
+
+  Hold Left Click on the cup (with the pot) to fill it.
+
+  Then Right Click to drink it.
+
+  BREAKER SWITCHES
+
+  Activate all switches to restore power to the house
+
+  and gain bonus stamina.
+
+================================================================
+
+WIN AND LOSE CONDITIONS
+
+================================================================
+
+  VICTORY
+
+  Timer runs out + enough points → escape through the door.
+
+  DEFEAT
+
+  - The enemy catches you (phase 3 without restoring stamina).
+
+  - You stare at the enemy too long and stamina reaches 0.
+
+  - Time runs out without enough points.
+
+================================================================
+
+GENERAL TIPS
+
+================================================================
+
+  - Blink regularly to keep your stamina high.
+
+  - Prioritize minigames early to accumulate points.
+
+  - Check each app's cooldown before trying to play.
+
+  - Keep an eye on both the timer and your stamina.
+
+  - Coffee is your best ally — use it before reaching critical.
+
+  - In phase 2, learn the 3 locations where the enemy appears.
+
+  - In phase 3, forget the minigames and find coffee first.
+
+  - Pop-ups can appear at any time, close them quickly
+
+    to avoid losing focus.
+
+================================================================
+
+                      GOOD LUCK!

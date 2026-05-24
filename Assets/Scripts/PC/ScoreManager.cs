@@ -19,7 +19,7 @@ public class ScoreManager : MonoBehaviour
     {
         score += cantidad;
         ActualizarUI();
-        managerMarian.UpdateScore(score);   //new line
+        managerMarian.UpdateScore(score);   
         Debug.Log($"Puntaje actual: {score}");
     }
 

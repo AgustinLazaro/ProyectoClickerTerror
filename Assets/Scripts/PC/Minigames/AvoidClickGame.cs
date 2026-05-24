@@ -101,7 +101,7 @@ public class AvoidClickGame : MonoBehaviour, IApp
     {
         HideAll();
 
-        //decide si mostrar correcto o incorrecto
+        
         bool showCorrect = Random.value > 0.4f;
         Debug.Log($"Mostrando: {(showCorrect ? "correcto" : "incorrecto")}");
 
