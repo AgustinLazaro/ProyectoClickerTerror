@@ -4,28 +4,34 @@ public class ComputerInteraction : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Animator armsAnimator;
-    [SerializeField] PCInteraction pcInteraction;   //MARIAN
+    [SerializeField] private PCInteraction pcInteraction;   //MARIAN
 
     [Header("State")]
-    private bool isSeated = true;
+    private bool isUsingPC = false; 
 
     private void Awake()
     {
-        pcInteraction = FindAnyObjectByType<PCInteraction>();
+        if (pcInteraction == null)
+        {
+            pcInteraction = FindAnyObjectByType<PCInteraction>();
+        }
     }
 
     public void UseComputer()
     {
-        isSeated = !isSeated;
+        
+        isUsingPC = !isUsingPC;
 
+        
         if (armsAnimator != null)
-            armsAnimator.SetBool("EnPC", isSeated);
+            armsAnimator.SetBool("EnPC", isUsingPC);
 
-        if (isSeated)
+       
+        if (isUsingPC)
             pcInteraction.ActivePC();   //MARIAN line
         else
             pcInteraction.DeactivePC(); //MARIAN line
 
-        Debug.Log("Is Player Seated?: " + isSeated);
+        Debug.Log("Is Player Using PC?: " + isUsingPC);
     }
 }

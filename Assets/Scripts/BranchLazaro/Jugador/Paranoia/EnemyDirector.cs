@@ -6,19 +6,22 @@ public class EnemyDirector : MonoBehaviour
     public ParanoiaManager paranoiaManager;
     public AudioSource headAudioSource;
 
-    [Header("Umbrales de Fase (Sincronizados)")]
-    // Estos valores ahora coinciden EXACTAMENTE con tu ParanoiaManager
+    [Header("UI de Derrota")]
+    public GameObject pantallaDerrota;
+
+    [Header("Umbrales de Fase")]
     public float umbralFase1 = 60f;
     public float umbralFase2 = 30f;
     public float umbralFase3 = 10f;
 
-    [Header("Ataque Fase 1: Sonidos")]
+    [Header("Ataque Fase 1 y 2: Susurros")]
     public AudioClip[] spookySounds;
-    public float minAudioInterval = 10f;
-    public float maxAudioInterval = 25f;
+    public float minAudioInterval = 5f;
+    public float maxAudioInterval = 12f;
+    [Range(0f, 100f)] public float probabilidadSusurro = 40f;
     private float audioTimer;
 
-    [Header("Ataque Fase 2: Apariciones Aleatorias")]
+    [Header("Ataque Fase 2: Apariciones")]
     public GameObject enemyScarePrefab;
     public Transform[] scareSpawnPoints;
     public float minScareInterval = 15f;
@@ -26,72 +29,78 @@ public class EnemyDirector : MonoBehaviour
     private float scareTimer;
 
     [Header("Ataque Fase 3: Muerte Inminente")]
+    public AudioClip sonidoFase3;
     public float tiempoParaMorir = 15f;
     private float deathTimer;
     private bool inPhase3 = false;
+    private bool atacando = false;
 
     void Start()
     {
         audioTimer = Random.Range(minAudioInterval, maxAudioInterval);
         scareTimer = Random.Range(minScareInterval, maxScareInterval);
         deathTimer = tiempoParaMorir;
-
-        Debug.Log("[DIRECTOR] Sistema iniciado. Esperando a que la estamina baje de 60...");
     }
 
     void Update()
     {
-        if (paranoiaManager == null) return;
+        if (paranoiaManager == null || atacando) return;
 
-        // Leemos la estamina cruda directo de tu script
         float estamina = paranoiaManager.currentStamina;
-
-        // --- MÁQUINA DE ESTADOS SINCRONIZADA ---
 
         if (estamina >= umbralFase1)
         {
-            // FASE 0: Normal (De 60 a 100) - No hay ataques
             ResetPhase3();
         }
         else if (estamina >= umbralFase2 && estamina < umbralFase1)
         {
-            // FASE 1: Ansiedad (De 30 a 59) - Solo sonidos
             ResetPhase3();
             HandleAudioScares(1f);
         }
         else if (estamina >= umbralFase3 && estamina < umbralFase2)
         {
-            // FASE 2: Paranoia (De 10 a 29) - Sonidos + Sustos visuales
             ResetPhase3();
             HandleAudioScares(1f);
             HandleVisualScares();
         }
         else if (estamina < umbralFase3)
         {
-            // FASE 3: Crítico (Menor a 10) - Sonidos acelerados + Muerte
             if (!inPhase3)
             {
                 inPhase3 = true;
-                Debug.Log("⚠️ [ALERTA DIRECTOR] ¡FASE 3 ACTIVADA! Tenés " + tiempoParaMorir + " segundos antes del ataque final.");
+
+                if (headAudioSource != null && sonidoFase3 != null)
+                {
+                    headAudioSource.Stop();
+                    headAudioSource.panStereo = 0f;
+                    headAudioSource.PlayOneShot(sonidoFase3);
+                }
             }
-            HandleAudioScares(0.4f); // Los sonidos se reproducen más rápido
+
+            HandleAudioScares(0.4f);
             HandleDeathTimer();
         }
     }
 
-    // --- LÓGICA DE ATAQUES ---
     private void HandleAudioScares(float speedMultiplier)
     {
         audioTimer -= Time.deltaTime;
 
         if (audioTimer <= 0f)
         {
-            Debug.Log($"🔊 [DIRECTOR] Reproduciendo sonido espeluznante. (Multiplicador de velocidad: {speedMultiplier}x)");
+            float dado = Random.Range(0f, 100f);
 
-            if (spookySounds != null && spookySounds.Length > 0 && headAudioSource != null)
+            if (dado <= probabilidadSusurro)
             {
-                AudioClip clip = spookySounds[Random.Range(0, spookySounds.Length)];
-                headAudioSource.PlayOneShot(clip);
+                if (spookySounds != null && spookySounds.Length > 0 && headAudioSource != null)
+                {
+                    if (!headAudioSource.isPlaying || headAudioSource.clip != sonidoFase3)
+                    {
+                        AudioClip clip = spookySounds[Random.Range(0, spookySounds.Length)];
+                        headAudioSource.panStereo = Random.Range(-0.8f, 0.8f);
+                        StartCoroutine(SuavizarAudio(clip));
+                    }
+                }
             }
 
             audioTimer = Random.Range(minAudioInterval, maxAudioInterval) * speedMultiplier;
@@ -107,10 +116,6 @@ public class EnemyDirector : MonoBehaviour
             if (enemyScarePrefab != null && scareSpawnPoints != null && scareSpawnPoints.Length > 0)
             {
                 Transform spawnPt = scareSpawnPoints[Random.Range(0, scareSpawnPoints.Length)];
-
-                Debug.Log($"👁️ [DIRECTOR] Sustazo visual instanciado en: {spawnPt.name}");
-
-                // Solo lo instanciamos. El monstruo ahora decide cuándo irse.
                 Instantiate(enemyScarePrefab, spawnPt.position, spawnPt.rotation);
             }
             scareTimer = Random.Range(minScareInterval, maxScareInterval);
@@ -121,21 +126,93 @@ public class EnemyDirector : MonoBehaviour
     {
         deathTimer -= Time.deltaTime;
 
-        if (deathTimer <= 0f)
+        if (deathTimer <= 0f && !atacando)
         {
-            Debug.Log("💀 [DIRECTOR] GAME OVER: Se acabó el tiempo en Fase 3. ¡El monstruo te atrapó!");
-            deathTimer = tiempoParaMorir; // Lo reseteamos para que no colapse la consola repitiendo el mensaje
+            atacando = true;
+            StartCoroutine(AtaqueFinal());
         }
     }
 
     private void ResetPhase3()
     {
-        if (inPhase3)
+        inPhase3 = false;
+        atacando = false;
+        deathTimer = tiempoParaMorir;
+    }
+
+    private System.Collections.IEnumerator SuavizarAudio(AudioClip clip)
+    {
+        headAudioSource.clip = clip;
+        headAudioSource.volume = 0f;
+        headAudioSource.Play();
+
+        float tiempoFade = 2f;
+        float timer = 0f;
+
+        while (timer < tiempoFade)
         {
-            Debug.Log("☕ [DIRECTOR] Estamina recuperada. Cancelando ataque final.");
+            timer += Time.deltaTime;
+            headAudioSource.volume = Mathf.Lerp(0f, 1f, timer / tiempoFade);
+            yield return null;
         }
 
-        inPhase3 = false;
-        deathTimer = tiempoParaMorir;
+        float tiempoRestante = clip.length - (tiempoFade * 2);
+        if (tiempoRestante > 0)
+        {
+            yield return new WaitForSeconds(tiempoRestante);
+        }
+
+        timer = 0f;
+        while (timer < tiempoFade)
+        {
+            timer += Time.deltaTime;
+            headAudioSource.volume = Mathf.Lerp(1f, 0f, timer / tiempoFade);
+            yield return null;
+        }
+
+        headAudioSource.Stop();
+        headAudioSource.volume = 1f;
+    }
+
+    private System.Collections.IEnumerator AtaqueFinal()
+    {
+        Transform playerCam = Camera.main.transform;
+        Vector3 spawnPos = playerCam.position + playerCam.forward * 5f;
+        spawnPos.y = playerCam.position.y - 1.2f;
+
+        GameObject monstruoFinal = Instantiate(enemyScarePrefab, spawnPos, Quaternion.LookRotation(-playerCam.forward));
+
+        MonoBehaviour scriptAlucinacion = (MonoBehaviour)monstruoFinal.GetComponent("ComportamientoAlucinacion");
+        if (scriptAlucinacion != null)
+        {
+            Destroy(scriptAlucinacion);
+        }
+
+        Animator anim = monstruoFinal.GetComponentInChildren<Animator>();
+        if (anim != null)
+        {
+            anim.SetBool("Caminando", true);
+        }
+
+        float tiempoAtaque = 1.2f;
+        float timer = 0f;
+        Vector3 posInicial = monstruoFinal.transform.position;
+
+        while (timer < tiempoAtaque)
+        {
+            timer += Time.deltaTime;
+            Vector3 targetPos = playerCam.position - new Vector3(0, 0.4f, 0);
+            monstruoFinal.transform.position = Vector3.Lerp(posInicial, targetPos, timer / tiempoAtaque);
+            monstruoFinal.transform.LookAt(playerCam);
+            yield return null;
+        }
+
+        if (pantallaDerrota != null)
+        {
+            pantallaDerrota.SetActive(true);
+        }
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 }

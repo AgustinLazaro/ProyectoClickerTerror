@@ -1,138 +1,122 @@
 using UnityEngine;
-using System.Collections;
 
 public class PlayerMovementLazaro : MonoBehaviour
 {
-    [Header("States")]
-    public bool isSitting = true;
-    private bool isTransitioning = false;
-
     [Header("Movement Settings")]
     public float walkSpeed = 3f;
-    public float transitionTime = 0.5f;
-
-    [Header("Movement Feel (Weight)")]
     public float acceleration = 8f;
     public float deceleration = 10f;
     private Vector3 currentVelocity;
 
+    [Header("Sonidos de Pasos")]
+    public AudioSource audioSourcePasos;
+    public AudioClip paso1;
+    public AudioClip paso2;
+    public float tiempoEntrePasos = 0.5f;
+    private float timerPasos;
+    private bool tocaPaso1 = true;
+
     [Header("Headbob (Cabeceo)")]
-    public float bobSpeed = 10f; 
-    public float bobHeight = 0.05f; 
+    public float bobSpeed = 10f;
+    public float bobHeight = 0.05f;
     private float defaultCameraY;
     private float bobTimer = 0f;
 
-    [Header("Camera Scripts")]
-    public CameraSnap cameraSnapScript;
-    public MouseLook mouseLookScript;
+    [Header("Camera Reference")]
+    public Camera playerCamera; // Asigna la cámara del jugador aquí en el Inspector
 
     void Start()
     {
-        isSitting = true;
-        cameraSnapScript.enabled = true;
-        mouseLookScript.enabled = false;
-        Cursor.lockState = CursorLockMode.None;
+        // Al arrancar, guardamos la altura original de la cámara
+        if (playerCamera != null)
+        {
+            defaultCameraY = playerCamera.transform.localPosition.y;
+        }
+        else
+        {
+            Debug.LogWarning("No asignaste la cámara en el PlayerMovementLazaro.");
+        }
 
-       
-        defaultCameraY = Camera.main.transform.localPosition.y;
+        // --- BLOQUEO DE CURSOR AGREGADO ACÁ ---
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && isTransitioning == false)
-        {
-            StartCoroutine(SmoothCameraTransition());
-        }
-
-        if (isSitting == false && isTransitioning == false)
-        {
-            Walk();
-        }
-    }
-
-    IEnumerator SmoothCameraTransition()
-    {
-        isTransitioning = true;
-        isSitting = !isSitting;
-
-        cameraSnapScript.enabled = false;
-        mouseLookScript.enabled = false;
-
-        Quaternion startingRotation = Camera.main.transform.localRotation;
-        Quaternion targetRotation = Quaternion.Euler(0, 0, 0);
-
-        float timer = 0f;
-
-        while (timer < transitionTime)
-        {
-            timer = timer + Time.deltaTime;
-            float percentage = timer / transitionTime;
-
-            Camera.main.transform.localRotation = Quaternion.Lerp(startingRotation, targetRotation, percentage);
-
-            yield return null;
-        }
-
-        if (isSitting == true)
-        {
-            cameraSnapScript.enabled = true;
-            Cursor.lockState = CursorLockMode.None;
-        }
-        else
-        {
-            mouseLookScript.enabled = true;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
-
-        isTransitioning = false;
+        Walk();
     }
 
     void Walk()
     {
+        // 1. Obtener los inputs de WASD
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveZ = Input.GetAxisRaw("Vertical");
 
-        Vector3 direction = new Vector3(moveX, 0, moveZ).normalized;
+        // 2. Calcular la dirección basada en hacia dónde mira el jugador
+        // Usamos transform.right y transform.forward para que el movimiento sea relativo a la rotación
+        Vector3 direction = (transform.right * moveX + transform.forward * moveZ).normalized;
         bool isPressingKeys = (moveX != 0 || moveZ != 0);
 
-        //Multiplicar el tiempo acumulado de caminata por una función Seno para obtener una onda entre -1 y 1,
-        //y luego escalamos esa amplitud multiplicándola por 0.01 para generar el mini movimiento vertical de la cámara.
-        //( AlturaActual = AlturaBase + ( \sin(TiempoAcumulado \times Velocidad) \times AlturaMaxima )
         if (isPressingKeys)
         {
+            // --- CÓDIGO DE MOVIMIENTO ---
             Vector3 targetSpeed = direction * walkSpeed;
             currentVelocity = Vector3.Lerp(currentVelocity, targetSpeed, acceleration * Time.deltaTime);
 
-            
-            bobTimer = bobTimer + (Time.deltaTime * bobSpeed);
+            // --- HEADBOB ---
+            if (playerCamera != null)
+            {
+                bobTimer = bobTimer + (Time.deltaTime * bobSpeed);
+                float newCameraY = defaultCameraY + (Mathf.Sin(bobTimer) * bobHeight);
 
-           
-            float newCameraY = defaultCameraY + (Mathf.Sin(bobTimer) * bobHeight);
+                playerCamera.transform.localPosition = new Vector3(
+                    playerCamera.transform.localPosition.x,
+                    newCameraY,
+                    playerCamera.transform.localPosition.z
+                );
+            }
 
-           
-            Camera.main.transform.localPosition = new Vector3(
-                Camera.main.transform.localPosition.x,
-                newCameraY,
-                Camera.main.transform.localPosition.z
-            );
+            // --- PASOS ---
+            timerPasos -= Time.deltaTime;
+            if (timerPasos <= 0f && audioSourcePasos != null)
+            {
+                if (tocaPaso1 && paso1 != null)
+                {
+                    audioSourcePasos.PlayOneShot(paso1);
+                }
+                else if (!tocaPaso1 && paso2 != null)
+                {
+                    audioSourcePasos.PlayOneShot(paso2);
+                }
+
+                tocaPaso1 = !tocaPaso1;
+                timerPasos = tiempoEntrePasos;
+            }
         }
         else
         {
+            // --- DESACELERACIÓN (Jugador suelta las teclas) ---
             currentVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
 
-          
-            bobTimer = 0f;
+            // Suavizar el retorno de la cámara al centro
+            if (playerCamera != null)
+            {
+                bobTimer = 0f;
+                float smoothReturnY = Mathf.Lerp(playerCamera.transform.localPosition.y, defaultCameraY, Time.deltaTime * 5f);
 
-          
-            float smoothReturnY = Mathf.Lerp(Camera.main.transform.localPosition.y, defaultCameraY, Time.deltaTime * 5f);
+                playerCamera.transform.localPosition = new Vector3(
+                    playerCamera.transform.localPosition.x,
+                    smoothReturnY,
+                    playerCamera.transform.localPosition.z
+                );
+            }
 
-            Camera.main.transform.localPosition = new Vector3(
-                Camera.main.transform.localPosition.x,
-                smoothReturnY,
-                Camera.main.transform.localPosition.z
-            );
+            timerPasos = 0f;
         }
 
-        transform.Translate(currentVelocity * Time.deltaTime);
+        // 3. Aplicar el movimiento final al CharacterController o Transform
+        // Usamos Space.World para que currentVelocity ya calcule la dirección correcta
+        transform.Translate(currentVelocity * Time.deltaTime, Space.World);
     }
 }
