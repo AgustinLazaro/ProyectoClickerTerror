@@ -9372,12 +9372,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
   audioSource: {fileID: 877049931}
-  openSFX: {fileID: 8300000, guid: ac985f806113d9a4f810a237f08f9d03, type: 3}
-  closeSFX: {fileID: 8300000, guid: b6856102800bac74c80a3f724473d5ea, type: 3}
-  clickSFX: {fileID: 8300000, guid: ef0d912dee4b5df44887509b21627da7, type: 3}
-  errorSFX: {fileID: 8300000, guid: d3822140f84abc145b664a05a772cc40, type: 3}
-  winJingleSFX: {fileID: 8300000, guid: 27682a0e18dd448429e293eb1d1f789c, type: 3}
-  loseJingleSFX: {fileID: 8300000, guid: ff8e3ab20089add4ab075694aa866fe4, type: 3}
+  openSFX: {fileID: 8300000, guid: 4407428209ca9c14986019487bb511f6, type: 3}
+  closeSFX: {fileID: 8300000, guid: ab3dd196af9176b41a96ca170ff59691, type: 3}
+  clickSFX: {fileID: 8300000, guid: 562b9773e052dfc4bb4f925c1cecccdf, type: 3}
+  errorSFX: {fileID: 8300000, guid: 7b779c34d7e16194a98fc93bc3f3793a, type: 3}
+  winJingleSFX: {fileID: 8300000, guid: 59f474758a1b0b64782d6cae33f17836, type: 3}
+  loseJingleSFX: {fileID: 8300000, guid: 3802ce7255661dc4b9491fe18e3280a0, type: 3}
 --- !u!4 &877049933
 Transform:
   m_ObjectHideFlags: 0
@@ -14226,7 +14226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90b952dc5e69e4a4a84a3a28da374d33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIPause
-  gameManager: {fileID: 0}
+  gameManager: {fileID: 624447969}
   panelMainPause: {fileID: 773094157}
   panelSettings: {fileID: 22380560}
   btnContinue: {fileID: 952020956}
