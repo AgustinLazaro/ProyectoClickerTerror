@@ -35,7 +35,7 @@ public class UIPause : MonoBehaviour
 
     private void AddButtonsListeners()
     {
-        // Asigna las funciones a los botones del menú.
+       
         btnContinue.onClick.AddListener(OnPlayClicked);
         btnSettings.onClick.AddListener(OnOptionsClicked);
         btnExit.onClick.AddListener(OnExitClicked);
@@ -44,7 +44,7 @@ public class UIPause : MonoBehaviour
 
     private void TogglePause()
     {
-        // Cambia el estado de pausa y muestra/oculta el panel principal.
+        
         isPause = !isPause;
         SetStateCanvasGroup(panelMainPause, isPause);
         if (isPause)
@@ -63,7 +63,7 @@ public class UIPause : MonoBehaviour
 
     public void OnPlayClicked()
     {
-        // Reanuda el juego.
+       
         TogglePause();
     }
 
@@ -78,7 +78,7 @@ public class UIPause : MonoBehaviour
 
     private void ExitGame()
     {
-        // Carga la escena del menú principal.
+      
         SceneManager.LoadScene(0);
     }
 
@@ -89,7 +89,7 @@ public class UIPause : MonoBehaviour
 
     private void SetStateCanvasGroup(CanvasGroup canvasGroup, bool state)
     {
-        // Activa o desactiva visibilidad e interacción de un panel.
+       
         canvasGroup.alpha = state ? 1 : 0;
         canvasGroup.interactable = state;
         canvasGroup.blocksRaycasts = state;

@@ -5,15 +5,15 @@ public class PCInteraction : MonoBehaviour
 {
     [Header("Configuration")]
     [SerializeField] private float zoomSpeed = 2f;
-    //[SerializeField] private float distanceMax = 3f;
+    
 
     [Header("References")]
     [SerializeField] private Transform playerCamera;
     [SerializeField] private Transform zoomPoint;
     [SerializeField] private Canvas pcCanvas;
-    [SerializeField] private PlayerMovementLazaro playerMovement; //LAZARO
-    [SerializeField] private MouseLook mouseLook;                 //LAZARO
-    //[SerializeField] private CameraLookMarian cameraLook;
+    [SerializeField] private PlayerMovementLazaro playerMovement; 
+    [SerializeField] private MouseLook mouseLook;                 
+   
 
     private Vector3 originalCameraPosition;
     private Quaternion originalCameraRotation;
@@ -36,10 +36,10 @@ public class PCInteraction : MonoBehaviour
         originalCameraPosition = playerCamera.position;
         originalCameraRotation = playerCamera.rotation;
 
-        // Apagamos el movimiento y la rotación del jugador
+        
         playerMovement.enabled = false;
         mouseLook.enabled = false;
-        //cameraLook.enabled = false;
+        
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -107,10 +107,10 @@ public class PCInteraction : MonoBehaviour
         playerCamera.position = originalCameraPosition;
         playerCamera.rotation = originalCameraRotation;
 
-        // Reactivamos scripts de LAZARO
+        
         playerMovement.enabled = true;
         mouseLook.enabled = true;
-        //cameraLook.enabled = true;
+        
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

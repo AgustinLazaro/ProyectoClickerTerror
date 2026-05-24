@@ -39,22 +39,22 @@ public class UIChangeScene : MonoBehaviour
     {
         SetStateCanvasGroup(menuCanvasGroup, false);
         SetStateCanvasGroup(creditsCanvasGroup, true);
-        //creditsCanvasGroup.SetActive(true);
+       
     }
 
     private void OnExitClicked()
     {
-        // Cierra el juego en una build real (Windows, Android, etc.)
+        
         Application.Quit();
 
-        // Si estás en el Editor, detiene el modo Play
+       
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
     }
     private void SetStateCanvasGroup(CanvasGroup canvasGroup, bool state)
     {
-        // Activa o desactiva visibilidad e interacción de un panel
+        
         canvasGroup.alpha = state ? 1 : 0;
         canvasGroup.interactable = state;
         canvasGroup.blocksRaycasts = state;
@@ -64,7 +64,7 @@ public class UIChangeScene : MonoBehaviour
     {
         SetStateCanvasGroup(menuCanvasGroup, true);
         SetStateCanvasGroup(creditsCanvasGroup, false);
-        //creditsCanvasGroup.SetActive(false);
+       
     }
 
     public void OnDestroy()

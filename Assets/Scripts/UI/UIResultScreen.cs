@@ -26,7 +26,7 @@ public class UIResultScreen : MonoBehaviour
 
     private void OnEnable()
     {
-        // Suscribe los eventos del GameManager.
+       
         if (managerMarian != null)
         {
             managerMarian.OnGameOver += ShowGameOverScreen;
@@ -36,7 +36,7 @@ public class UIResultScreen : MonoBehaviour
 
     private void OnDisable()
     {
-        // Desuscribe los eventos para evitar errores.
+        
         managerMarian.OnGameOver -= ShowGameOverScreen;
         managerMarian.OnVictory -= ShowVictoryScreen;
     }
@@ -48,7 +48,7 @@ public class UIResultScreen : MonoBehaviour
 
     private void AddButtonsListeners()
     {
-        // Asigna funciones a los botones de ambos paneles.
+       
         gameOverPlayAgainButton.onClick.AddListener(OnPlayAgainClicked);
         gameOverMainMenuButton.onClick.AddListener(OnExitGameClicked);
         victoryPlayAgainButton.onClick.AddListener(OnPlayAgainClicked);
@@ -56,7 +56,7 @@ public class UIResultScreen : MonoBehaviour
     }
     private void RemoveButtonsListeners()
     {
-        // Elimina los listeners para prevenir referencias colgantes.
+      
         gameOverPlayAgainButton.onClick.RemoveAllListeners();
         gameOverMainMenuButton.onClick.RemoveAllListeners();
         victoryPlayAgainButton.onClick.RemoveAllListeners();
@@ -64,14 +64,14 @@ public class UIResultScreen : MonoBehaviour
     }
     private void SetCanvasGroup(CanvasGroup canvasGroup, bool state)
     {
-        // Activa o desactiva la visibilidad e interacción de un panel.
+       
         canvasGroup.alpha = state ? 1 : 0;
         canvasGroup.interactable = state;
         canvasGroup.blocksRaycasts = state;
     }
     public void ShowGameOverScreen()
     {
-        //muestra el panel de Game Over
+        
         Cursor.lockState = CursorLockMode.None;
         gameoverPanel.alpha = 1;
         gameoverPanel.interactable = true;
@@ -79,7 +79,7 @@ public class UIResultScreen : MonoBehaviour
     }
     public void ShowVictoryScreen()
     {
-        //muestra el panel de Victoria
+      
         Cursor.lockState = CursorLockMode.None;
         victoryPanel.alpha = 1;
         victoryPanel.interactable = true;
@@ -87,13 +87,13 @@ public class UIResultScreen : MonoBehaviour
     }
     private void OnPlayAgainClicked()
     {
-        // Reinicia el juego cargando la escena principal.
+       
         SceneManager.LoadScene(1);
         Time.timeScale = 1;
     }
     private void OnExitGameClicked()
     {
-        // Vuelve al menú principal.
+        
         SceneManager.LoadScene(0);
     }
 }

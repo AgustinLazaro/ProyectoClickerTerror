@@ -4,7 +4,7 @@ public class ComputerInteraction : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Animator armsAnimator;
-    [SerializeField] private PCInteraction pcInteraction;   //MARIAN
+    [SerializeField] private PCInteraction pcInteraction;   
 
     [Header("State")]
     private bool isUsingPC = false; 
@@ -28,9 +28,9 @@ public class ComputerInteraction : MonoBehaviour
 
        
         if (isUsingPC)
-            pcInteraction.ActivePC();   //MARIAN line
+            pcInteraction.ActivePC();  
         else
-            pcInteraction.DeactivePC(); //MARIAN line
+            pcInteraction.DeactivePC(); 
 
         Debug.Log("Is Player Using PC?: " + isUsingPC);
     }

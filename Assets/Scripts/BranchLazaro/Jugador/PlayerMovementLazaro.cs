@@ -23,11 +23,11 @@ public class PlayerMovementLazaro : MonoBehaviour
     private float bobTimer = 0f;
 
     [Header("Camera Reference")]
-    public Camera playerCamera; // Asigna la cámara del jugador aquí en el Inspector
+    public Camera playerCamera; 
 
     void Start()
     {
-        // Al arrancar, guardamos la altura original de la cámara
+        
         if (playerCamera != null)
         {
             defaultCameraY = playerCamera.transform.localPosition.y;
