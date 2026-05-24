@@ -4,7 +4,7 @@ using UnityEngine;
 public class GameTimer : MonoBehaviour
 {
     [Header("Configuracion")]
-    [SerializeField] private float timeLimit = 60f;
+    [SerializeField] private float timeLimit = 300f;
 
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI timerText;
