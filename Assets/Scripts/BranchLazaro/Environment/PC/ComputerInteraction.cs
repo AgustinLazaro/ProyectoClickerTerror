@@ -28,9 +28,9 @@ public class ComputerInteraction : MonoBehaviour
 
        
         if (isUsingPC)
-            pcInteraction.ActivePC();   //MARIAN line
+            pcInteraction.ActivatePC();   //MARIAN line
         else
-            pcInteraction.DeactivePC(); //MARIAN line
+            pcInteraction.DeactivatePC(); //MARIAN line
 
         Debug.Log("Is Player Using PC?: " + isUsingPC);
     }

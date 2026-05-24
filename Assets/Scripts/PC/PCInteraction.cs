@@ -11,6 +11,7 @@ public class PCInteraction : MonoBehaviour
     [SerializeField] private Transform playerCamera;
     [SerializeField] private Transform zoomPoint;
     [SerializeField] private Canvas pcCanvas;
+    [SerializeField] private CanvasGroup pcCanvasGroup;
     [SerializeField] private PlayerMovementLazaro playerMovement; //LAZARO
     [SerializeField] private MouseLook mouseLook;                 //LAZARO
     //[SerializeField] private CameraLookMarian cameraLook;
@@ -26,10 +27,10 @@ public class PCInteraction : MonoBehaviour
     {
         if (inTransition) return;
         if (isPCActive && Input.GetKeyDown(KeyCode.Escape))
-            DeactivePC();
+            DeactivatePC();
     }
 
-    public void ActivePC()
+    public void ActivatePC()
     {
         if (isPCActive || inTransition) return;
 
@@ -47,11 +48,11 @@ public class PCInteraction : MonoBehaviour
         StartCoroutine(ZoomIntoMonitor());
     }
 
-    public void DeactivePC()
+    public void DeactivatePC()
     {
         if (!isPCActive || inTransition) return;
 
-        pcCanvas.gameObject.SetActive(false);
+        //pcCanvas.gameObject.SetActive(false);
         StartCoroutine(ZoomFromMonitor());
     }
 
@@ -77,7 +78,8 @@ public class PCInteraction : MonoBehaviour
         playerCamera.position = zoomPoint.position;
         playerCamera.rotation = zoomPoint.rotation;
 
-        pcCanvas.gameObject.SetActive(true);
+        //pcCanvas.gameObject.SetActive(true);
+        SetStateCanvasGroup(pcCanvasGroup, true);
         isPCActive = true;
         inTransition = false;
     }
@@ -116,5 +118,13 @@ public class PCInteraction : MonoBehaviour
         Cursor.visible = false;
 
         inTransition = false;
+    }
+
+    private void SetStateCanvasGroup(CanvasGroup canvasGroup, bool state)
+    {
+        // Activa o desactiva visibilidad e interacción de un panel
+        canvasGroup.alpha = state ? 1 : 0;
+        canvasGroup.interactable = state;
+        canvasGroup.blocksRaycasts = state;
     }
 }
