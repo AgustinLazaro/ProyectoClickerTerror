@@ -1,0 +1,149 @@
+================================================================
+                    CLICKER TERROR
+                    CÓMO JUGAR
+================================================================
+ 
+OBJETIVO
+----------------------------------------------------------------
+Sobrevivir dentro de la casa el tiempo suficiente acumulando
+puntos en los minijuegos de la PC. Cuando el tiempo se agote,
+si tenés el puntaje necesario, podrás escapar y ganar.
+Pero cuidado... algo te observa.
+ 
+================================================================
+CONTROLES
+================================================================
+ 
+MOVIMIENTO
+  W / A / S / D       Caminar
+  Mouse               Mirar alrededor
+  E                   Sentarse, Pararse/Salir de la PC
+ 
+ACCIONES
+  Click Izquierdo     Interactuar con objetos y con la PC
+  Click Derecho       Tomar objeto (ej: taza de café)
+  Espacio             Parpadear
+ 
+================================================================
+MECÁNICAS PRINCIPALES
+================================================================
+ 
+STAMINA (PARANOIA)
+  - Tu stamina baja constantemente con el tiempo.
+  - Si no parpadeás (Espacio) regularmente, baja más rápido.
+  - Tomar café restaura stamina.
+  - Si la stamina llega a 0... perdés.
+  - A menor stamina, mayores efectos y mayor peligro.
+ 
+================================================================
+FASES DE PARANOIA
+================================================================
+ 
+  FASE 0 — NORMAL (100% - 70% stamina)
+  Todo tranquilo. Explorá, usá la PC y acumulá puntos.
+  Aprovechá este tiempo para familiarizarte con el entorno.
+ 
+  FASE 1 — ANSIEDAD (70% - 50% stamina)
+  Empezás a escuchar susurros y sonidos inexplicables.
+  No hay peligro inmediato, pero es una advertencia.
+  Tip: buscá café antes de bajar más la stamina.
+ 
+  FASE 2 — PARANOIA (50% - 20% stamina)
+  El enemigo aparece. Puede estar en 3 lugares distintos
+  de la casa. Si lo mirás directamente, te drena stamina.
+  Los susurros continúan.
+  Tip: evitá el contacto visual con el enemigo.
+       Conocé los 3 lugares donde puede aparecer.
+ 
+  FASE 3 — CRÍTICO (20% - 0% stamina)
+  Máximo peligro. Todo se acumula:
+  susurros + enemigo visible + cuenta regresiva mortal.
+  Si no recargás la stamina rápidamente, el enemigo
+  emitirá un grito y te atrapará. No hay segunda oportunidad.
+  Tip: en cuanto entrés a esta fase, dejá todo y buscá café.
+ 
+================================================================
+TIMER
+================================================================
+  - Tenés un tiempo límite para acumular puntos.
+  - Cuando el tiempo se agote, si tenés el puntaje necesario
+    podés ganar
+  - Si no tenés el puntaje suficiente al agotarse el tiempo,
+    perdés.
+ 
+================================================================
+PUNTAJE
+================================================================
+  - Acumula puntos completando minijuegos en la PC.
+  - Cada minijuego tiene un cooldown antes de poder
+    jugarlo de nuevo.
+ 
+================================================================
+MINIJUEGOS (PC)
+================================================================
+ 
+  APP 1 — CLICK RÁPIDO
+  Alcanzá el número de clicks objetivo antes de que
+  se agote el tiempo.
+  Tip: clickeá lo más rápido que puedas sin distraerte.
+ 
+  APP 2 — ARRASTRAR OBJETO
+  Arrastrá el objeto hacia la zona destino antes de que
+  se agote el tiempo.
+  Tip: soltá el objeto exactamente sobre la zona marcada.
+ 
+  APP 3 — EVITAR CLICK
+  Aparecen objetos correctos e incorrectos aleatoriamente.
+  Clickeá solo los correctos. Un click incorrecto = derrota.
+  Tip: esperá a identificar bien el objeto antes de clickear.
+ 
+  APP 4 — TIMING
+  Una barra oscila de lado a lado. Detenela en la zona verde.
+  Tip: anticipá el movimiento y clickeá un poco antes.
+ 
+================================================================
+OBJETOS DEL ENTORNO
+================================================================
+ 
+  CAFETERA
+  Interactuá con ella para tomar la jarra de café.
+  Luego llenás la taza y la bebés para restaurar stamina.
+ 
+  TAZA DE CAFÉ
+  Mantenés Click Izquierdo sobre la taza (con la jarra)
+  para llenarla. Luego Click Derecho para beberla.
+ 
+  FUSIBLES
+  Activá todos los interruptores para restaurar la luz
+  y ganar stamina extra.
+ 
+================================================================
+CONDICIONES DE VICTORIA Y DERROTA
+================================================================
+ 
+  VICTORIA
+  Tiempo agotado + puntaje suficiente → escapá.
+ 
+  DERROTA
+  - El enemigo te atrapa (fase 3 sin recargar stamina).
+  - Mirás al enemigo demasiado y tu stamina llega a 0.
+  - El tiempo se agota sin el puntaje necesario.
+ 
+================================================================
+TIPS GENERALES
+================================================================
+ 
+  - Parpadeá regularmente para mantener la stamina alta.
+  - Priorizá los minijuegos al principio para acumular puntos.
+  - Revisá el cooldown de cada app antes de intentar jugar.
+  - Mantené un ojo en el timer y en tu stamina al mismo tiempo.
+  - El café es tu mejor aliado — úsalo antes de llegar a crítico.
+  - En fase 2, aprendé los 3 lugares donde aparece el enemigo.
+  - En fase 3, olvidate de los minijuegos y buscá café primero.
+  - Los pop-ups pueden aparecer en cualquier momento,
+    cerralos rápido para no distraerte.
+ 
+================================================================
+                    ¡BUENA SUERTE!
+           S̵̼͊Ȋ̷͜G̶̜̀Ṷ̶͠E̵͉̿ ̴̻̊J̷̗͝U̷̹̚G̷͓̽A̸͙͊N̸̗͋D̷̰̉Ö̸̯́
+================================================================
