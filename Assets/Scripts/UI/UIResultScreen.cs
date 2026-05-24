@@ -19,6 +19,7 @@ public class UIResultScreen : MonoBehaviour
 
     private void Awake()
     {
+        managerMarian = FindAnyObjectByType<GameManagerMarian>();
         SetCanvasGroup(gameoverPanel, false);
         SetCanvasGroup(victoryPanel, false);
         AddButtonsListeners();
