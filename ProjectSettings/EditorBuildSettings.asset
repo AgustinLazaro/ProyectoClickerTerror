@@ -9,8 +9,8 @@ EditorBuildSettings:
     path: Assets/Scenes/marianDroneScenes/MainMenuDrone.unity
     guid: cdeb4b3dfe50eed4482b2653dfdcdc91
   - enabled: 1
-    path: Assets/Scenes/LazaroBranch.unity
-    guid: 56ba6092a14401e4ebfcc4dadbde2b58
+    path: Assets/Scenes/MarianCopy2.unity
+    guid: 8134e87016b392046809f4f974574685
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
