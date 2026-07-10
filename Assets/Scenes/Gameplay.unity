@@ -10019,7 +10019,7 @@ GameObject:
   - component: {fileID: 877049932}
   - component: {fileID: 877049931}
   m_Layer: 0
-  m_Name: PCAudioManager
+  m_Name: AudioManager PC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

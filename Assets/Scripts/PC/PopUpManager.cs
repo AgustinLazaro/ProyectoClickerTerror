@@ -19,12 +19,12 @@ public class PopUpManager : MonoBehaviour
 
     private float _nextTimePopUp;
     private GameObject _currentPopUp = null;
-    private AudioManager _audioManager;
+    private PCAudioManager _audioManager;
 
     private void Awake()
     {
         _nextTimePopUp = intervalAppearance;
-        _audioManager = FindAnyObjectByType<AudioManager>();
+        _audioManager = FindAnyObjectByType<PCAudioManager>();
     }
 
     private void Update()

@@ -28,13 +28,13 @@ public class AvoidClickGame : MonoBehaviour, IApp
 
     private AppController _appController;
     private ScoreManager _scoreManager;
-    private AudioManager _audioManager;
+    private PCAudioManager _audioManager;
 
     private void Awake()
     {
         _appController = FindAnyObjectByType<AppController>();
         _scoreManager = FindAnyObjectByType<ScoreManager>();
-        _audioManager = FindAnyObjectByType<AudioManager>();
+        _audioManager = FindAnyObjectByType<PCAudioManager>();
         RegisterButtons();
     }
 

@@ -22,7 +22,7 @@ public class TimingGame : MonoBehaviour, IApp
 
     private AppController _appController;
     private ScoreManager _scoreManager;
-    private AudioManager _audioManager;
+    private PCAudioManager _audioManager;
 
     // posicion fija de la zona verde (0 a 1)
     private float greenZoneMin;
@@ -32,7 +32,7 @@ public class TimingGame : MonoBehaviour, IApp
     {
         _appController = FindAnyObjectByType<AppController>();
         _scoreManager = FindAnyObjectByType<ScoreManager>();
-        _audioManager = FindAnyObjectByType<AudioManager>();
+        _audioManager = FindAnyObjectByType<PCAudioManager>();
         stopButton.onClick.AddListener(OnStop);
         GreenZoneConfiguration();
     }
