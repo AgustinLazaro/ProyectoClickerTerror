@@ -75,6 +75,8 @@ public class UIResultScreen : MonoBehaviour
         
         Cursor.lockState = CursorLockMode.None;
         gameoverPanel.alpha = 1;
+        //marian
+        Cursor.visible = true;
         gameoverPanel.interactable = true;
         gameoverPanel.blocksRaycasts = true;
     }
@@ -83,6 +85,8 @@ public class UIResultScreen : MonoBehaviour
       
         Cursor.lockState = CursorLockMode.None;
         victoryPanel.alpha = 1;
+        //marian
+        Cursor.visible = true;
         victoryPanel.interactable = true;
         victoryPanel.blocksRaycasts = true;
     }

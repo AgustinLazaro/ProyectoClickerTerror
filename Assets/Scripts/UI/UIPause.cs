@@ -52,12 +52,16 @@ public class UIPause : MonoBehaviour
             gameManager.Pause();
             Time.timeScale = 0f;
             Cursor.lockState = CursorLockMode.None;
+            //marian
+            Cursor.visible = true;
         }
         else
         {
             gameManager.Resume();
             Time.timeScale = 1f;
             Cursor.lockState = CursorLockMode.Locked;
+            //marian
+            Cursor.visible = false;
         }
     }
 
