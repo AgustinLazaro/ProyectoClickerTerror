@@ -15,13 +15,13 @@ public class PlayerInteraction : MonoBehaviour
     public bool hasEmptyCup = false;
 
     [Header("Managers")]
-    public ParanoiaManager paranoiaManager;
+    public PlayerParanoia paranoiaManager;
 
     void Start()
     {
         if (paranoiaManager == null)
         {
-            paranoiaManager = Object.FindFirstObjectByType<ParanoiaManager>();
+            paranoiaManager = Object.FindFirstObjectByType<PlayerParanoia>();
         }
     }
 

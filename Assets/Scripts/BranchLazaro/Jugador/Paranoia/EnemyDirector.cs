@@ -3,7 +3,7 @@
 public class EnemyDirector : MonoBehaviour
 {
     [Header("Referencias")]
-    public ParanoiaManager paranoiaManager;
+    [SerializeField] private PlayerParanoia paranoia;
     public AudioSource headAudioSource;
 
     [Header("UI de Derrota")]
@@ -44,9 +44,9 @@ public class EnemyDirector : MonoBehaviour
 
     void Update()
     {
-        if (paranoiaManager == null || atacando) return;
+        if (paranoia == null || atacando) return;
 
-        float estamina = paranoiaManager.currentStamina;
+        float estamina = paranoia.currentStamina;
 
         if (estamina >= umbralFase1)
         {

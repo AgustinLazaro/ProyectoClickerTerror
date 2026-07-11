@@ -3,7 +3,7 @@
 public class ComportamientoAlucinacion : MonoBehaviour
 {
     private Transform playerCamera;
-    private ParanoiaManager paranoia;
+    [SerializeField] private PlayerParanoia paranoia;
 
     [Header("Mecánica: La Evitación")]
     public float tiempoParaDesaparecer = 4f; 
@@ -15,7 +15,7 @@ public class ComportamientoAlucinacion : MonoBehaviour
     {
        
         if (Camera.main != null) playerCamera = Camera.main.transform;
-        paranoia = FindObjectOfType<ParanoiaManager>();
+        paranoia = FindObjectOfType<PlayerParanoia>();
 
        
         Destroy(gameObject, 15f);
