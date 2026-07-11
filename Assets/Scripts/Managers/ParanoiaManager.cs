@@ -1,161 +1,161 @@
-using UnityEngine;
-using System.Collections;
-using UnityEngine.Rendering;
-using System.Runtime.CompilerServices; 
+//using UnityEngine;
+//using System.Collections;
+//using UnityEngine.Rendering;
 
-public class ParanoiaManager : MonoBehaviour
-{
-    [Header("Stamina System")]
-    public float currentStamina = 100f;
-    public float baseDrainSpeed = 5f;
 
-    [Header("Blink System (Parpadeo)")]
-    public float timeWithoutBlinking = 0f;
-    public float penaltyThreshold = 5f;
-    public float penaltyMultiplier = 2f;
-    public GameObject blackScreenUI;
-    private bool isBlinking = false;
+//public class ParanoiaManager : MonoBehaviour
+//{
+//    [Header("Stamina System")]
+//    public float currentStamina = 100f;
+//    public float baseDrainSpeed = 5f;
 
-    [Header("Efectos Visuales (Volumes)")]
-    public Volume volumeFase1;
-    public Volume volumeFase2;
-    public Volume volumeFase3;
-    public float speedTransition = 1.5f; 
+//    [Header("Blink System (Parpadeo)")]
+//    public float timeWithoutBlinking = 0f;
+//    public float penaltyThreshold = 5f;
+//    public float penaltyMultiplier = 2f;
+//    public GameObject blackScreenUI;
+//    private bool isBlinking = false;
 
-    private int paranoiaPhase = 0;
+//    [Header("Efectos Visuales (Volumes)")]
+//    public Volume volumeFase1;
+//    public Volume volumeFase2;
+//    public Volume volumeFase3;
+//    public float speedTransition = 1.5f; 
 
-    [Header("Cámara y FOV")]
-    public Camera playerCamera; 
-    public float fovNormal = 60f; 
-    public float fovCritico = 110f; 
-    public float velocidadFov = 20f; 
+//    private int paranoiaPhase = 0;
 
-    [SerializeField] GameManagerMarian managerMarian;
+//    [Header("Cámara y FOV")]
+//    public Camera playerCamera; 
+//    public float fovNormal = 60f; 
+//    public float fovCritico = 110f; 
+//    public float velocidadFov = 20f; 
 
-    private void Awake()
-    {
-        managerMarian = FindAnyObjectByType<GameManagerMarian>();
-    }
+//    [SerializeField] GameManagerMarian managerMarian;
 
-    private void Start()
-    {
-        if (blackScreenUI != null)
-        {
-            blackScreenUI.SetActive(false);
-        }
+//    private void Awake()
+//    {
+//        managerMarian = FindAnyObjectByType<GameManagerMarian>();
+//    }
 
-        
-        if (volumeFase1 != null) volumeFase1.weight = 0f;
-        if (volumeFase2 != null) volumeFase2.weight = 0f;
-        if (volumeFase3 != null) volumeFase3.weight = 0f;
-    }
-
-    private void Update()
-    {
-        
-        timeWithoutBlinking += Time.deltaTime;
-        if (Input.GetKeyDown(KeyCode.Space) && !isBlinking)
-        {
-            StartCoroutine(BlinkRoutine());
-        }
+//    private void Start()
+//    {
+//        if (blackScreenUI != null)
+//        {
+//            blackScreenUI.SetActive(false);
+//        }
 
         
-        float currentDrainSpeed = baseDrainSpeed;
-        if (timeWithoutBlinking > penaltyThreshold)
-        {
-            currentDrainSpeed = baseDrainSpeed * penaltyMultiplier;
-        }
+//        if (volumeFase1 != null) volumeFase1.weight = 0f;
+//        if (volumeFase2 != null) volumeFase2.weight = 0f;
+//        if (volumeFase3 != null) volumeFase3.weight = 0f;
+//    }
 
-        currentStamina -= (currentDrainSpeed * Time.deltaTime);
-        currentStamina = Mathf.Clamp(currentStamina, 0f, 100f);
+//    private void Update()
+//    {
+        
+//        timeWithoutBlinking += Time.deltaTime;
+//        if (Input.GetKeyDown(KeyCode.Space) && !isBlinking)
+//        {
+//            StartCoroutine(BlinkRoutine());
+//        }
 
         
-        if (currentStamina <= 0f)
-            managerMarian.GameOver();
+//        float currentDrainSpeed = baseDrainSpeed;
+//        if (timeWithoutBlinking > penaltyThreshold)
+//        {
+//            currentDrainSpeed = baseDrainSpeed * penaltyMultiplier;
+//        }
+
+//        currentStamina -= (currentDrainSpeed * Time.deltaTime);
+//        currentStamina = Mathf.Clamp(currentStamina, 0f, 100f);
+
+        
+//        if (currentStamina <= 0f)
+//            managerMarian.GameOver();
             
         
-        UpdateParanoiaEvents();
-        UpdateVFX();
-    }
+//        UpdateParanoiaEvents();
+//        UpdateVFX();
+//    }
 
-    private void UpdateParanoiaEvents()
-    {
+//    private void UpdateParanoiaEvents()
+//    {
        
-        if (currentStamina >= 60f && paranoiaPhase != 0)
-        {
-            paranoiaPhase = 0;
-            Debug.Log(" FASE 0: Todo normal. (Estamina: " + currentStamina.ToString("F0") + ")");
-        }
+//        if (currentStamina >= 60f && paranoiaPhase != 0)
+//        {
+//            paranoiaPhase = 0;
+//            Debug.Log(" FASE 0: Todo normal. (Estamina: " + currentStamina.ToString("F0") + ")");
+//        }
 
        
-        else if (currentStamina >= 30f && currentStamina < 60f && paranoiaPhase != 1)
-        {
-            paranoiaPhase = 1;
-            Debug.Log(" FASE 1: Ansiedad. Entra Volumen 1. (Estamina: " + currentStamina.ToString("F0") + ")");
-        }
+//        else if (currentStamina >= 30f && currentStamina < 60f && paranoiaPhase != 1)
+//        {
+//            paranoiaPhase = 1;
+//            Debug.Log(" FASE 1: Ansiedad. Entra Volumen 1. (Estamina: " + currentStamina.ToString("F0") + ")");
+//        }
 
-        // FASE 2: Paranoia (Entre 29 y 10)
-        else if (currentStamina >= 10f && currentStamina < 30f && paranoiaPhase != 2)
-        {
-            paranoiaPhase = 2;
-            Debug.Log(" FASE 2: Paranoia. Entra Volumen 2. (Estamina: " + currentStamina.ToString("F0") + ")");
-        }
+//        // FASE 2: Paranoia (Entre 29 y 10)
+//        else if (currentStamina >= 10f && currentStamina < 30f && paranoiaPhase != 2)
+//        {
+//            paranoiaPhase = 2;
+//            Debug.Log(" FASE 2: Paranoia. Entra Volumen 2. (Estamina: " + currentStamina.ToString("F0") + ")");
+//        }
 
-        // FASE 3: Crítico (Menor a 10)
-        else if (currentStamina < 10f && paranoiaPhase != 3)
-        {
-            paranoiaPhase = 3;
-            Debug.Log(" FASE 3: CRÍTICO. Entra Volumen 3. (Estamina: " + currentStamina.ToString("F0") + ")");
-        }
-    }
+//        // FASE 3: Crítico (Menor a 10)
+//        else if (currentStamina < 10f && paranoiaPhase != 3)
+//        {
+//            paranoiaPhase = 3;
+//            Debug.Log(" FASE 3: CRÍTICO. Entra Volumen 3. (Estamina: " + currentStamina.ToString("F0") + ")");
+//        }
+//    }
 
-    private void UpdateVFX()
-    {
+//    private void UpdateVFX()
+//    {
         
-        float targetFase1 = (paranoiaPhase == 1) ? 1f : 0f;
-        float targetFase2 = (paranoiaPhase == 2) ? 1f : 0f;
-        float targetFase3 = (paranoiaPhase == 3) ? 1f : 0f;
+//        float targetFase1 = (paranoiaPhase == 1) ? 1f : 0f;
+//        float targetFase2 = (paranoiaPhase == 2) ? 1f : 0f;
+//        float targetFase3 = (paranoiaPhase == 3) ? 1f : 0f;
 
        
-        if (volumeFase1 != null)
-            volumeFase1.weight = Mathf.MoveTowards(volumeFase1.weight, targetFase1, speedTransition * Time.deltaTime);
+//        if (volumeFase1 != null)
+//            volumeFase1.weight = Mathf.MoveTowards(volumeFase1.weight, targetFase1, speedTransition * Time.deltaTime);
 
-        if (volumeFase2 != null)
-            volumeFase2.weight = Mathf.MoveTowards(volumeFase2.weight, targetFase2, speedTransition * Time.deltaTime);
+//        if (volumeFase2 != null)
+//            volumeFase2.weight = Mathf.MoveTowards(volumeFase2.weight, targetFase2, speedTransition * Time.deltaTime);
 
-        if (volumeFase3 != null)
-            volumeFase3.weight = Mathf.MoveTowards(volumeFase3.weight, targetFase3, speedTransition * Time.deltaTime);
+//        if (volumeFase3 != null)
+//            volumeFase3.weight = Mathf.MoveTowards(volumeFase3.weight, targetFase3, speedTransition * Time.deltaTime);
 
         
-        if (playerCamera != null)
-        {
+//        if (playerCamera != null)
+//        {
             
-            float fovObjetivo = (paranoiaPhase == 3) ? fovCritico : fovNormal;
+//            float fovObjetivo = (paranoiaPhase == 3) ? fovCritico : fovNormal;
 
             
-            playerCamera.fieldOfView = Mathf.MoveTowards(playerCamera.fieldOfView, fovObjetivo, velocidadFov * Time.deltaTime);
-        }
-    }
+//            playerCamera.fieldOfView = Mathf.MoveTowards(playerCamera.fieldOfView, fovObjetivo, velocidadFov * Time.deltaTime);
+//        }
+//    }
 
-    IEnumerator BlinkRoutine()
-    {
-        isBlinking = true;
-        if (blackScreenUI != null) blackScreenUI.SetActive(true);
-        timeWithoutBlinking = 0f;
+//    IEnumerator BlinkRoutine()
+//    {
+//        isBlinking = true;
+//        if (blackScreenUI != null) blackScreenUI.SetActive(true);
+//        timeWithoutBlinking = 0f;
 
-        yield return new WaitForSeconds(0.2f);
+//        yield return new WaitForSeconds(0.2f);
 
-        if (blackScreenUI != null) blackScreenUI.SetActive(false);
-        isBlinking = false;
-    }
+//        if (blackScreenUI != null) blackScreenUI.SetActive(false);
+//        isBlinking = false;
+//    }
 
    
-    public void RefillStamina(float cantidad)
-    {
-        currentStamina += cantidad;
-        currentStamina = Mathf.Clamp(currentStamina, 0f, 100f);
-        Debug.Log("Stamina refilled! Ahora tenés: " + currentStamina);
-    }
-}
+//    public void RefillStamina(float cantidad)
+//    {
+//        currentStamina += cantidad;
+//        currentStamina = Mathf.Clamp(currentStamina, 0f, 100f);
+//        Debug.Log("Stamina refilled! Ahora tenés: " + currentStamina);
+//    }
+//}
 
 

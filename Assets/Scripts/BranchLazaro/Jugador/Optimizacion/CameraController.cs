@@ -7,6 +7,12 @@ public class CameraController : MonoBehaviour
     public float bobHeight = 0.05f;
     public float smoothReturnSpeed = 5f;
 
+    [Header("FOV Paranoia (NUEVO)")]
+    public PlayerParanoia playerParanoia;
+    public float fovNormal = 60f;
+    public float fovCritico = 110f;
+    public float velocidadFov = 20f;
+    private Camera cam;
     [Header("References")]
     [Tooltip("Arrastrá al jugador acá para leer si se está moviendo")]
     public PlayerMovementLazaro playerMovement;
@@ -16,21 +22,28 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
+        cam = GetComponent<Camera>();
         defaultCameraY = transform.localPosition.y;
     }
 
     void Update()
     {
-        if (playerMovement == null) return;
-       
-        if (playerMovement.isMoving)
-        {
-            ApplyBob();
-        }
-        else
-        {
-            ResetBob();
-        }
+        // 1. Lógica del Headbob (que ya tenías)
+        if (playerMovement.isMoving) ApplyBob();
+        else ResetBob();
+
+        // 2. Lógica del FOV (NUEVA)
+        UpdateParanoiaFOV();
+    }
+
+    private void UpdateParanoiaFOV()
+    {
+        if (cam == null || playerParanoia == null) return;
+
+        // Si la fase es 3, vamos al FOV crítico, si no, al normal
+        float fovObjetivo = (playerParanoia.paranoiaPhase == 3) ? fovCritico : fovNormal;
+
+        cam.fieldOfView = Mathf.MoveTowards(cam.fieldOfView, fovObjetivo, velocidadFov * Time.deltaTime);
     }
 
     private void ApplyBob()

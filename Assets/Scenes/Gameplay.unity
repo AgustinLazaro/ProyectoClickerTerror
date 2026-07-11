@@ -194,7 +194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a88e09f07c89b55479ab5b9defaeb616, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDirector
-  paranoiaManager: {fileID: 545055905}
+  paranoiaManager: {fileID: 0}
   headAudioSource: {fileID: 423629871}
   pantallaDerrota: {fileID: 0}
   umbralFase1: 60
@@ -641,7 +641,7 @@ MonoBehaviour:
   hasCoffeePot: 0
   hasFullCup: 0
   hasEmptyCup: 0
-  paranoiaManager: {fileID: 545055905}
+  paranoiaManager: {fileID: 0}
 --- !u!114 &54478010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4329,6 +4329,7 @@ GameObject:
   - component: {fileID: 423629874}
   - component: {fileID: 423629869}
   - component: {fileID: 423629873}
+  - component: {fileID: 423629876}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -4364,7 +4365,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 543450652646028480}
   - {fileID: 2063018873}
   - {fileID: 1611198554}
   - {fileID: 196415745}
@@ -4532,6 +4532,26 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &423629876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 423629868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 362edf3ee6bf97c448fda2174f6f868f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraController
+  bobSpeed: 10
+  bobHeight: 0.05
+  smoothReturnSpeed: 5
+  playerParanoia: {fileID: 545055907}
+  fovNormal: 60
+  fovCritico: 110
+  velocidadFov: 20
+  playerMovement: {fileID: 423629869}
 --- !u!1 &444441293
 GameObject:
   m_ObjectHideFlags: 0
@@ -8595,7 +8615,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 545055906}
-  - component: {fileID: 545055905}
+  - component: {fileID: 545055907}
+  - component: {fileID: 545055908}
   m_Layer: 0
   m_Name: ParanoiaManager
   m_TagString: Untagged
@@ -8603,33 +8624,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &545055905
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 545055904}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 506fd7a1d4ee51c42bd495d309d3753b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ParanoiaManager
-  currentStamina: 1000
-  baseDrainSpeed: 0.1
-  timeWithoutBlinking: 0
-  penaltyThreshold: 2
-  penaltyMultiplier: 5
-  blackScreenUI: {fileID: 264447045}
-  volumeFase1: {fileID: 1779803239}
-  volumeFase2: {fileID: 801400981}
-  volumeFase3: {fileID: 849542985}
-  speedTransition: 1.5
-  playerCamera: {fileID: 2063018872}
-  fovNormal: 60
-  fovCritico: 110
-  velocidadFov: 25
-  managerMarian: {fileID: 624447969}
 --- !u!4 &545055906
 Transform:
   m_ObjectHideFlags: 0
@@ -8645,6 +8639,42 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1456076892}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &545055907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 545055904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62a973c07ab5e804d9c3d4839067ef88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerParanoia
+  currentStamina: 1000
+  baseDrainSpeed: 5
+  penaltyThreshold: 5
+  penaltyMultiplier: 2
+  blackScreenUI: {fileID: 1559137935}
+  sfxChannel: {fileID: 11400000, guid: 74046fced2221514c9a92138311e74bd, type: 2}
+  managerMarian: {fileID: 624447969}
+--- !u!114 &545055908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 545055904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1127681bf3fd6fb43942a6f5e82973ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ParanoiaVFX
+  playerParanoia: {fileID: 545055907}
+  volumeFase1: {fileID: 1779803239}
+  volumeFase2: {fileID: 801400981}
+  volumeFase3: {fileID: 849542985}
+  speedTransition: 1.5
 --- !u!1 &572250835
 GameObject:
   m_ObjectHideFlags: 0
@@ -10309,7 +10339,7 @@ MonoBehaviour:
   - {fileID: 1504102230}
   houseLight: {fileID: 0}
   staminaRecoveryAmount: 25
-  paranoiaManager: {fileID: 545055905}
+  paranoiaManager: {fileID: 0}
 --- !u!1 &812086836
 GameObject:
   m_ObjectHideFlags: 0
@@ -20312,6 +20342,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 543450652646028480}
   - {fileID: 1779803238}
   - {fileID: 801400980}
   - {fileID: 849542984}
@@ -20349,7 +20380,7 @@ MonoBehaviour:
   hasCoffeePot: 0
   hasFullCup: 0
   hasEmptyCup: 0
-  paranoiaManager: {fileID: 545055905}
+  paranoiaManager: {fileID: 0}
 --- !u!114 &2063018876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23924,7 +23955,7 @@ Transform:
   m_Children:
   - {fileID: 3006501975440061263}
   - {fileID: 8188308169078015422}
-  m_Father: {fileID: 423629870}
+  m_Father: {fileID: 2063018873}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &553148705780765104
 Transform:

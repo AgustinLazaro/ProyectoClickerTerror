@@ -12,8 +12,15 @@ public class PlayerMovementLazaro : MonoBehaviour
 
     public bool isMoving { get; private set; }
 
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true;
+    }
+
     void Start()
     {
+        // Dejamos solo lo del cursor acá
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
