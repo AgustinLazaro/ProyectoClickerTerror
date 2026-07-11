@@ -15,19 +15,21 @@ public class QuickClickGame : MonoBehaviour, IApp
     [SerializeField] private TextMeshProUGUI timeText;
     [SerializeField] private TextMeshProUGUI resultText;
 
+    [SerializeField] private SFXEventChannelSO sfxChannel;
+
     private int _currentClicks = 0;
     private float _timeLeft = 0f;
     private bool _isGameActive = false;
 
     private AppController _appController;
     private ScoreManager _scoreManager;
-    private PCAudioManager _audioManager;
+    //private PCAudioManager _audioManager;
 
     private void Awake()
     {
         _appController = FindAnyObjectByType<AppController>();
         _scoreManager = FindAnyObjectByType<ScoreManager>();
-        _audioManager = FindAnyObjectByType<PCAudioManager>();
+        //_audioManager = FindAnyObjectByType<PCAudioManager>();
         clickButton.onClick.AddListener(OnClick);
     }
 
@@ -74,7 +76,8 @@ public class QuickClickGame : MonoBehaviour, IApp
     {
         if (!_isGameActive) return;
 
-        _audioManager.PlayClick();
+        //_audioManager.PlayClick();
+        sfxChannel.Raise(SoundID.Click);
         _currentClicks++;
         UpdateUI();
 
@@ -91,12 +94,14 @@ public class QuickClickGame : MonoBehaviour, IApp
 
         if (win)
         {
-            _audioManager.PlayWinJingle();
+            //_audioManager.PlayWinJingle();
+            sfxChannel.Raise(SoundID.WinJingle);
             _scoreManager.AddPoints(10);
         }
         else
         {
-            _audioManager.PlayLoseJingle();
+            //_audioManager.PlayLoseJingle();
+            sfxChannel.Raise(SoundID.LoseJingle);
         }
 
             StartCoroutine(BackToHomeScreen());

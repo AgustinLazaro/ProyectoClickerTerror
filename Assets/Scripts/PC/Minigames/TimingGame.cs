@@ -16,13 +16,15 @@ public class TimingGame : MonoBehaviour, IApp
     [SerializeField] private TextMeshProUGUI timeText;
     [SerializeField] private TextMeshProUGUI resultText;
 
+    [SerializeField] private SFXEventChannelSO sfxChannel;
+
     private float _timeLeft;
     private float _direction = 1f;
     private bool isGameActive = false;
 
     private AppController _appController;
     private ScoreManager _scoreManager;
-    private PCAudioManager _audioManager;
+    //private PCAudioManager _audioManager;
 
     // posicion fija de la zona verde (0 a 1)
     private float greenZoneMin;
@@ -32,7 +34,7 @@ public class TimingGame : MonoBehaviour, IApp
     {
         _appController = FindAnyObjectByType<AppController>();
         _scoreManager = FindAnyObjectByType<ScoreManager>();
-        _audioManager = FindAnyObjectByType<PCAudioManager>();
+        //_audioManager = FindAnyObjectByType<PCAudioManager>();
         stopButton.onClick.AddListener(OnStop);
         GreenZoneConfiguration();
     }
@@ -93,7 +95,8 @@ public class TimingGame : MonoBehaviour, IApp
     {
         if (!isGameActive) return;
 
-        _audioManager.PlayClick();
+        //_audioManager.PlayClick();
+        sfxChannel.Raise(SoundID.Click);
 
         bool enZonaVerde = SliderBar.value >= greenZoneMin &&
                            SliderBar.value <= greenZoneMax;
@@ -109,12 +112,14 @@ public class TimingGame : MonoBehaviour, IApp
 
         if (win)
         {
-            _audioManager.PlayWinJingle();
+            //_audioManager.PlayWinJingle();
+            sfxChannel.Raise(SoundID.WinJingle);
             _scoreManager.AddPoints(40);
         }
         else
         {
-            _audioManager.PlayLoseJingle();
+            //_audioManager.PlayLoseJingle();
+            sfxChannel.Raise(SoundID.LoseJingle);
         }
 
         StartCoroutine(VolverAlHomeScreen());

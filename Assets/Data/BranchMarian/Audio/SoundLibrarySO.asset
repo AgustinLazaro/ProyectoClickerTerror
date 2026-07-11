@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c0e298f42b26544faefc96669ddd3c6, type: 3}
+  m_Name: SoundLibrarySO
+  m_EditorClassIdentifier: Assembly-CSharp::SoundLibrarySO
+  sounds:
+  - id: 0
+    clip: {fileID: 8300000, guid: 52acaf04a2eb74740b4b0e205fec0d5c, type: 3}
+  - id: 1
+    clip: {fileID: 8300000, guid: 1628b4d2d5d766747b7f153cd6589abd, type: 3}
+  - id: 2
+    clip: {fileID: 8300000, guid: dc46510333f6033458d94614dc2f90d3, type: 3}
+  - id: 3
+    clip: {fileID: 8300000, guid: 9680d86598320c640afe53a765c1aa63, type: 3}
+  - id: 4
+    clip: {fileID: 8300000, guid: b223505177c7bcd498dc2df2f0c0041a, type: 3}
+  - id: 5
+    clip: {fileID: 8300000, guid: 18730d19b011dd94ab4358692f10764d, type: 3}
+  - id: 6
+    clip: {fileID: 0}
+  - id: 7
+    clip: {fileID: 0}
+  - id: 8
+    clip: {fileID: 0}
+  - id: 9
+    clip: {fileID: 0}

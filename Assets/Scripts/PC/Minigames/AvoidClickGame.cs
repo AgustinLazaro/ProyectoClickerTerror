@@ -1,4 +1,5 @@
 using System.Collections;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
@@ -21,6 +22,8 @@ public class AvoidClickGame : MonoBehaviour, IApp
     [SerializeField] private TextMeshProUGUI rightsText;
     [SerializeField] private TextMeshProUGUI resultText;
 
+    [SerializeField] private SFXEventChannelSO sfxChannel;
+
     private float _timeLeft;
     private float _timeNextAppearance;
     private int _rightsClicked = 0;
@@ -28,13 +31,13 @@ public class AvoidClickGame : MonoBehaviour, IApp
 
     private AppController _appController;
     private ScoreManager _scoreManager;
-    private PCAudioManager _audioManager;
+    //private PCAudioManager _audioManager;
 
     private void Awake()
     {
         _appController = FindAnyObjectByType<AppController>();
         _scoreManager = FindAnyObjectByType<ScoreManager>();
-        _audioManager = FindAnyObjectByType<PCAudioManager>();
+        //_audioManager = FindAnyObjectByType<PCAudioManager>();
         RegisterButtons();
     }
 
@@ -132,7 +135,8 @@ public class AvoidClickGame : MonoBehaviour, IApp
         Debug.Log($"Click correcto en: {button.name}");
         if (!isGameActive) return;
 
-        _audioManager.PlayClick();
+        //_audioManager.PlayClick();
+        sfxChannel.Raise(SoundID.Click);
         button.gameObject.SetActive(false);
         _rightsClicked++;
         UpdateUI();
@@ -146,7 +150,8 @@ public class AvoidClickGame : MonoBehaviour, IApp
         Debug.Log("Click incorrecto");
         if (!isGameActive) return;
 
-        _audioManager.PlayClick();
+        //_audioManager.PlayClick();
+        sfxChannel.Raise(SoundID.Click);
         GameOver(win: false);
     }
 
@@ -159,12 +164,14 @@ public class AvoidClickGame : MonoBehaviour, IApp
 
         if (win)
         {
-            _audioManager.PlayWinJingle();
+            //_audioManager.PlayWinJingle();
+            sfxChannel.Raise(SoundID.WinJingle);
             _scoreManager.AddPoints(30);
         }
         else
         {
-            _audioManager.PlayLoseJingle();
+            //_audioManager.PlayLoseJingle();
+            sfxChannel.Raise(SoundID.LoseJingle);
         }
 
         StartCoroutine(BackToHomeScreen());

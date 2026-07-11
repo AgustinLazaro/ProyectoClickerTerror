@@ -15,6 +15,8 @@ public class DragObjectGame : MonoBehaviour, IApp
     [SerializeField] private TextMeshProUGUI timeText;
     [SerializeField] private TextMeshProUGUI resultText;
 
+    [SerializeField] private SFXEventChannelSO sfxChannel;
+
     private Vector2 _initialPosition;
     private float _timeLeft;
     private bool isGameActive = false;
@@ -22,13 +24,13 @@ public class DragObjectGame : MonoBehaviour, IApp
 
     private AppController _appController;
     private ScoreManager _scoreManager;
-    private PCAudioManager _audioManager;
+    //private PCAudioManager _audioManager;
 
     private void Awake()
     {
         _appController = FindAnyObjectByType<AppController>();
         _scoreManager = FindAnyObjectByType<ScoreManager>();
-        _audioManager = FindAnyObjectByType<PCAudioManager>();
+        //_audioManager = FindAnyObjectByType<PCAudioManager>();
         //canvas = GetComponentInParent<Canvas>();
         _initialPosition = dragableObject.anchoredPosition;
     }
@@ -71,7 +73,8 @@ public class DragObjectGame : MonoBehaviour, IApp
     public void OnBeginDrag()
     {
         if (!isGameActive) return;
-        _audioManager.PlayClick();
+        //_audioManager.PlayClick();
+        sfxChannel.Raise(SoundID.Click);
     }
 
     public void OnDrag(Vector2 delta)
@@ -105,12 +108,14 @@ public class DragObjectGame : MonoBehaviour, IApp
 
         if (win)
         {
-            _audioManager.PlayWinJingle();
+            //_audioManager.PlayWinJingle();
+            sfxChannel.Raise(SoundID.WinJingle);
             _scoreManager.AddPoints(20);
         }
         else
         {
-            _audioManager.PlayLoseJingle();
+            //_audioManager.PlayLoseJingle();
+            sfxChannel.Raise(SoundID.LoseJingle);
         }
 
         StartCoroutine(BackToHomeScreen());

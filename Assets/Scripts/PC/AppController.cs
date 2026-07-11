@@ -42,12 +42,14 @@ public class AppController : MonoBehaviour
     [Header("Fade")]
     [SerializeField] private float fadeDuration = 0.3f;
 
+    [SerializeField] private SFXEventChannelSO sfxChannel;
+
     private CanvasGroup currentApp = null;
-    private PCAudioManager audioManager;
+    //private PCAudioManager audioManager;
 
     private void Awake()
     {
-        audioManager = FindAnyObjectByType<PCAudioManager>();
+        //audioManager = FindAnyObjectByType<PCAudioManager>();
         AddButtonsListeners();
         SetStateCanvasGroup(homeScreen, true);
         CloseAllWindows();
@@ -75,7 +77,8 @@ public class AppController : MonoBehaviour
 
         currentApp = app;
         app.GetComponent<IApp>()?.OnAppOpen();
-        audioManager.PlayOpen();
+        //audioManager.PlayOpen();
+        sfxChannel.Raise(SoundID.Open);
 
         StartCoroutine(FadeIn(app));
         StartCoroutine(FadeOut(homeScreen));
@@ -90,7 +93,8 @@ public class AppController : MonoBehaviour
         if (currentApp == null) return;
 
         currentApp.GetComponent<IApp>()?.OnAppClose();
-        audioManager.PlayClose();
+        //audioManager.PlayClose();
+        sfxChannel.Raise(SoundID.Close);
 
         StartCooldown(currentApp);
 

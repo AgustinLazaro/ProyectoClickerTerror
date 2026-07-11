@@ -195,6 +195,7 @@ MonoBehaviour:
   - "ERROR: conexi\xF3n perdida"
   - 'ALERTA: proceso desconocido'
   - 'ERROR: memoria insuficiente'
+  sfxChannel: {fileID: 11400000, guid: 74046fced2221514c9a92138311e74bd, type: 2}
 --- !u!1 &1529703510658654253
 GameObject:
   m_ObjectHideFlags: 0
@@ -370,6 +371,7 @@ MonoBehaviour:
   clicksText: {fileID: 5317143674352847411}
   timeText: {fileID: 3690359042888715581}
   resultText: {fileID: 6712236202408147568}
+  sfxChannel: {fileID: 11400000, guid: 74046fced2221514c9a92138311e74bd, type: 2}
 --- !u!1 &1814137315065369334
 GameObject:
   m_ObjectHideFlags: 0
@@ -1461,6 +1463,7 @@ MonoBehaviour:
   destinationArea: {fileID: 1390393673678907533}
   timeText: {fileID: 1436434910356834309}
   resultText: {fileID: 292718240379734477}
+  sfxChannel: {fileID: 11400000, guid: 74046fced2221514c9a92138311e74bd, type: 2}
 --- !u!1 &2539774906182856963
 GameObject:
   m_ObjectHideFlags: 0
@@ -3400,6 +3403,7 @@ MonoBehaviour:
   greenZone: {fileID: 3264539111952836619}
   timeText: {fileID: 3909679211314676982}
   resultText: {fileID: 5571671501061452444}
+  sfxChannel: {fileID: 11400000, guid: 74046fced2221514c9a92138311e74bd, type: 2}
 --- !u!1 &4320111469663265043
 GameObject:
   m_ObjectHideFlags: 0
@@ -5306,6 +5310,7 @@ MonoBehaviour:
   cooldownText3: {fileID: 8580861354424636668}
   cooldownText4: {fileID: 7999800465626210312}
   fadeDuration: 0.3
+  sfxChannel: {fileID: 11400000, guid: 74046fced2221514c9a92138311e74bd, type: 2}
 --- !u!225 &4415150452044258606
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -5706,6 +5711,7 @@ MonoBehaviour:
   timeText: {fileID: 4968130867160674658}
   rightsText: {fileID: 6598189275714047399}
   resultText: {fileID: 747831003757962618}
+  sfxChannel: {fileID: 11400000, guid: 74046fced2221514c9a92138311e74bd, type: 2}
 --- !u!1 &7825576714433814468
 GameObject:
   m_ObjectHideFlags: 0
