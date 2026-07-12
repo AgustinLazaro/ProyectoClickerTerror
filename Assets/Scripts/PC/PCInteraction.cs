@@ -12,7 +12,7 @@ public class PCInteraction : MonoBehaviour
     [SerializeField] private Transform zoomPoint;
     [SerializeField] private Canvas pcCanvas;
     [SerializeField] private PlayerMovementLazaro playerMovement; 
-    [SerializeField] private MouseLook mouseLook;                 
+    [SerializeField] private PlayerLook mouseLook;                 
    
 
     private Vector3 originalCameraPosition;

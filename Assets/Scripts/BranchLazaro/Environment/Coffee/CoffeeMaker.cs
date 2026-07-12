@@ -12,9 +12,9 @@ public class CoffeeMaker : MonoBehaviour
 
     public void Interact(PlayerInteraction player)
     {
-        if (isPotReady && !player.hasCoffeePot && !player.hasFullCup)
+        if (isPotReady && !player.HasCoffeePot && player.CurrentCupState != CupState.Full)
         {
-            player.hasCoffeePot = true;
+            player.HasCoffeePot = true;
             isPotReady = false;
 
             if (potVisual != null) potVisual.SetActive(false);
@@ -26,7 +26,6 @@ public class CoffeeMaker : MonoBehaviour
             Debug.Log("Coffee maker is currently brewing. Please wait.");
         }
     }
-
     public void StartBrewing()
     {
         StartCoroutine(BrewRoutine());

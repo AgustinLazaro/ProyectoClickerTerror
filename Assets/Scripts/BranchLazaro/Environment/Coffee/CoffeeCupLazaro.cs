@@ -30,7 +30,7 @@ public class CoffeeCupLazaro : MonoBehaviour
 
     public void TryFill(PlayerInteraction player)
     {
-        if (!isFull && player.hasCoffeePot && isOnTable)
+        if (!isFull && player.HasCoffeePot && isOnTable)
         {
             fillProgress += fillSpeed * Time.deltaTime;
 
@@ -52,8 +52,8 @@ public class CoffeeCupLazaro : MonoBehaviour
     {
         if (isFull && isOnTable)
         {
-            player.hasFullCup = true;
-            player.hasCoffeePot = false;
+            player.CurrentCupState = CupState.Full;
+            player.HasCoffeePot = false;
             isOnTable = false;
 
             if (coffeeMaker != null) coffeeMaker.StartBrewing();
@@ -67,9 +67,11 @@ public class CoffeeCupLazaro : MonoBehaviour
 
     public void PlaceCup(PlayerInteraction player)
     {
-        if (!isOnTable && player.hasEmptyCup)
+       
+        if (!isOnTable && player.CurrentCupState == CupState.Empty)
         {
-            player.hasEmptyCup = false;
+            
+            player.CurrentCupState = CupState.None;
             isOnTable = true;
 
             isFull = false;

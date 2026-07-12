@@ -2,5 +2,6 @@ public enum SoundID
 {
     Open, Close,
     Click, Error, WinJingle, LoseJingle, Cooldown,
-    StaminaRestored, StaminaLow, Blink
+    StaminaRestored, StaminaLow, Blink,
+    Footstep1, Footstep2
 }

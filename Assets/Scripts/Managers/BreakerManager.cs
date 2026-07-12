@@ -8,16 +8,15 @@ public class BreakerManager : MonoBehaviour
     public float staminaRecoveryAmount = 20f; 
 
     [Header("Managers")]
-    public ParanoiaManager paranoiaManager;
-
+    [SerializeField] private PlayerParanoia paranoia;
     void Start()
     {
         if (houseLight != null) houseLight.enabled = false;
 
        
-        if (paranoiaManager == null)
+        if (paranoia == null)
         {
-            paranoiaManager = Object.FindFirstObjectByType<ParanoiaManager>();
+            paranoia = Object.FindFirstObjectByType<PlayerParanoia>();
         }
     }
 
@@ -42,9 +41,9 @@ public class BreakerManager : MonoBehaviour
         if (houseLight != null) houseLight.enabled = true;
 
     
-        if (paranoiaManager != null)
+        if (paranoia != null)
         {
-            paranoiaManager.RefillStamina(staminaRecoveryAmount);
+            paranoia.RefillStamina(staminaRecoveryAmount);
         }
     }
 }
