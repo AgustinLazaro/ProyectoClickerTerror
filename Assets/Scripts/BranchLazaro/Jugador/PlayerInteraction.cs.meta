@@ -1,2 +1,15 @@
 fileFormatVersion: 2
 guid: 26b0d42985fcada4088e5c8e0c3d4639
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - playerCamera: {instanceID: 0}
+  - armsAnimator: {instanceID: 0}
+  - inventoryData: {fileID: 11400000, guid: 475471e39fadbfb40b9543342e074f42, type: 2}
+  - paranoiaManager: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

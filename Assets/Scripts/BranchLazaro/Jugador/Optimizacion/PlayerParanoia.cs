@@ -3,35 +3,50 @@ using System.Collections;
 
 public class PlayerParanoia : MonoBehaviour
 {
-    [Header("Stamina System")]
-    public float currentStamina = 1000f;
-    public float baseDrainSpeed = 5f;
-
-    public int paranoiaPhase { get; private set; } = 0;
-
-    [Header("Blink System")]
-    public float penaltyThreshold = 5f;
-    public float penaltyMultiplier = 2f;
-    public GameObject blackScreenUI;
+    [Header("Stats (Arrastrá tu cubito ParanoiaStatsSO acá)")]
+    public ParanoiaStatsSO statsData;
 
     [Header("Conexión de Audio channel")]
     public SFXEventChannelSO sfxChannel;
 
+    [Header("Blink System")]
+    public GameObject blackScreenUI;
+
     [Header("Referencias")]
     [SerializeField] private GameManagerMarian managerMarian;
+
+   
+    private float _currentStamina;
+    public float CurrentStamina
+    {
+        get { return _currentStamina; }
+        private set
+        {
+            if (statsData != null)
+                _currentStamina = Mathf.Clamp(value, 0f, statsData.maxStamina);
+        }
+    }
+
+    public int ParanoiaPhase { get; private set; } = 0;
 
     private float timeWithoutBlinking = 0f;
     private bool isBlinking = false;
     private int lastPhase = 0;
 
     private void Start()
-    { 
-         FindAnyObjectByType<GameManagerMarian>();
-        blackScreenUI.SetActive(false);
+    {
+        // Corregido: Ahora sí se asigna a la variable
+        managerMarian = FindAnyObjectByType<GameManagerMarian>();
+
+        if (blackScreenUI != null) blackScreenUI.SetActive(false);
+
+        if (statsData != null) CurrentStamina = statsData.maxStamina;
     }
 
     private void Update()
     {
+        if (statsData == null) return; // Seguridad si te olvidás de arrastrar el cubito
+
         HandleBlink();
         HandleStamina();
         UpdateParanoiaPhase();
@@ -49,32 +64,34 @@ public class PlayerParanoia : MonoBehaviour
 
     private void HandleStamina()
     {
-        float currentDrainSpeed = timeWithoutBlinking > penaltyThreshold ? baseDrainSpeed * penaltyMultiplier : baseDrainSpeed;
+        float currentDrainSpeed = timeWithoutBlinking > statsData.penaltyThreshold ? statsData.baseDrainSpeed * statsData.penaltyMultiplier : statsData.baseDrainSpeed;
+        CurrentStamina -= currentDrainSpeed * Time.deltaTime;
 
-        currentStamina -= currentDrainSpeed * Time.deltaTime;
-        currentStamina = Mathf.Clamp(currentStamina, 0f, 100f);
-
-        if (currentStamina <= 0f)
+        if (CurrentStamina <= 0f)
         {
-            managerMarian.GameOver();
+            if (managerMarian != null) managerMarian.GameOver();
         }
     }
 
     private void UpdateParanoiaPhase()
     {
-        if (currentStamina >= 60f) paranoiaPhase = 0;
-        else if (currentStamina >= 30f) paranoiaPhase = 1;
-        else if (currentStamina >= 10f) paranoiaPhase = 2;
-        else paranoiaPhase = 3;
+      
+        float fase1Threshold = statsData.maxStamina * 0.60f;
+        float fase2Threshold = statsData.maxStamina * 0.30f;
+        float fase3Threshold = statsData.maxStamina * 0.10f;
 
-        // Si cambiamos de fase y entramos a estado crítico, reproducimos el sonido
-        if (paranoiaPhase != lastPhase)
+        if (CurrentStamina >= fase1Threshold) ParanoiaPhase = 0;
+        else if (CurrentStamina >= fase2Threshold) ParanoiaPhase = 1;
+        else if (CurrentStamina >= fase3Threshold) ParanoiaPhase = 2;
+        else ParanoiaPhase = 3;
+
+        if (ParanoiaPhase != lastPhase)
         {
-            if (paranoiaPhase == 3 && lastPhase < 3)
+            if (ParanoiaPhase == 3 && lastPhase < 3)
             {
                 if (sfxChannel != null) sfxChannel.Raise(SoundID.StaminaLow);
             }
-            lastPhase = paranoiaPhase;
+            lastPhase = ParanoiaPhase;
         }
     }
 
@@ -82,7 +99,6 @@ public class PlayerParanoia : MonoBehaviour
     {
         isBlinking = true;
 
-        // ¡Disparamos el sonido del parpadeo!
         if (sfxChannel != null) sfxChannel.Raise(SoundID.Blink);
         if (blackScreenUI != null) blackScreenUI.SetActive(true);
 
@@ -96,12 +112,15 @@ public class PlayerParanoia : MonoBehaviour
 
     public void RefillStamina(float cantidad)
     {
-        currentStamina += cantidad;
-        currentStamina = Mathf.Clamp(currentStamina, 0f, 100f);
+        // Al sumar, la propiedad se auto-limita al máximo
+        CurrentStamina += cantidad;
 
-        // ¡Disparamos el sonido de recuperación!
         if (sfxChannel != null) sfxChannel.Raise(SoundID.StaminaRestored);
 
-        Debug.Log("Stamina refilled! Ahora tenés: " + currentStamina);
+        Debug.Log("Stamina refilled! Ahora tenés: " + CurrentStamina);
+    }
+    public void DrainStamina(float cantidad)
+    {
+        CurrentStamina -= cantidad;
     }
 }

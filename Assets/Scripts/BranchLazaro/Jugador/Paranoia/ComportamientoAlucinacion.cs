@@ -13,11 +13,8 @@ public class ComportamientoAlucinacion : MonoBehaviour
 
     void Start()
     {
-       
         if (Camera.main != null) playerCamera = Camera.main.transform;
         paranoia = FindObjectOfType<PlayerParanoia>();
-
-       
         Destroy(gameObject, 15f);
     }
 
@@ -25,9 +22,7 @@ public class ComportamientoAlucinacion : MonoBehaviour
     {
         if (playerCamera == null || paranoia == null) return;
 
-       
         Vector3 direccionAlEnemigo = (transform.position - playerCamera.position).normalized;
-
         
         float vision = Vector3.Dot(playerCamera.forward, direccionAlEnemigo);
 
@@ -36,8 +31,8 @@ public class ComportamientoAlucinacion : MonoBehaviour
             
             timerIgnorando = 0f;
 
-            
-            paranoia.currentStamina -= penalidadPorMirar * Time.deltaTime;
+
+            paranoia.DrainStamina(penalidadPorMirar * Time.deltaTime);
         }
         else if (vision < -0.2f)
         {
@@ -46,12 +41,9 @@ public class ComportamientoAlucinacion : MonoBehaviour
 
             if (timerIgnorando >= tiempoParaDesaparecer)
             {
-                
-
-                
-
                 Destroy(gameObject);
             }
         }
     }
+
 }

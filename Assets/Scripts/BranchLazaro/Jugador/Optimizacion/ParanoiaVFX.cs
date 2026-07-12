@@ -23,14 +23,12 @@ public class ParanoiaVFX : MonoBehaviour
     {
         if (playerParanoia == null) return;
 
-        // Leemos la fase en la que estamos
-        int phase = playerParanoia.paranoiaPhase;
+        int phase = playerParanoia.ParanoiaPhase;
 
         float targetFase1 = (phase == 1) ? 1f : 0f;
         float targetFase2 = (phase == 2) ? 1f : 0f;
         float targetFase3 = (phase == 3) ? 1f : 0f;
 
-        // Aplicamos las transiciones
         if (volumeFase1 != null)
             volumeFase1.weight = Mathf.MoveTowards(volumeFase1.weight, targetFase1, speedTransition * Time.deltaTime);
 

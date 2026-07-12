@@ -46,7 +46,7 @@ public class EnemyDirector : MonoBehaviour
     {
         if (paranoia == null || atacando) return;
 
-        float estamina = paranoia.currentStamina;
+        float estamina = paranoia.CurrentStamina;
 
         if (estamina >= umbralFase1)
         {

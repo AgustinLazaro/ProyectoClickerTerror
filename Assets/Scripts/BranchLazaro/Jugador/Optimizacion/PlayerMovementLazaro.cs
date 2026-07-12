@@ -20,7 +20,6 @@ public class PlayerMovementLazaro : MonoBehaviour
 
     void Start()
     {
-        // Dejamos solo lo del cursor acá
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
