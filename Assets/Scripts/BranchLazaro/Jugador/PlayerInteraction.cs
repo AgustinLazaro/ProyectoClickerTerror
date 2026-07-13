@@ -61,7 +61,6 @@ public class PlayerInteraction : MonoBehaviour
             currentTarget = hit.collider.GetComponent<InteractableBase>();
         }
 
-        // 2. Lógica de Hover (Ahora currentTarget YA TIENE el valor)
         if (currentTarget != previousTarget)
         {
             if (previousTarget != null) previousTarget.OnHoverExit();
@@ -74,13 +73,13 @@ public class PlayerInteraction : MonoBehaviour
         {
             if (Input.GetMouseButton(0))
             {
-                Debug.Log($"Holding: {currentTarget.name}"); // DEBUG: Avisa si detecta que sostenés
+                Debug.Log($"Holding: {currentTarget.name}"); 
                 currentTarget.OnClickHold(this);
             }
 
             if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log($"Clicked: {currentTarget.name}"); // DEBUG: Avisa si detecta clic
+                Debug.Log($"Clicked: {currentTarget.name}");
                 if (armsAnimator != null) armsAnimator.SetTrigger("Grab");
                 currentTarget.OnClickDown(this);
             }
@@ -109,11 +108,8 @@ public class PlayerInteraction : MonoBehaviour
         playerBody.rotation = chair.sitPosition.rotation;
         transform.localRotation = Quaternion.Euler(0, 0, 0);
 
-        PlayerLook look = GetComponent<PlayerLook>();
-        if (look != null)
-        {
-            look.LockOnPC(chair.sitPosition);
-        }
+        PlayerLook look = GetComponent<PlayerLook>(); 
+        look.LockOnPC(chair.sitPosition);
     }
     public void StandUp()
     {

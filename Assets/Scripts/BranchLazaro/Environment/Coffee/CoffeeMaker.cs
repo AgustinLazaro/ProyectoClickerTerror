@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 
-// 1. Hereda de InteractableBase
 public class CoffeeMaker : InteractableBase
 {
     [Header("Settings")]
@@ -36,16 +35,14 @@ public class CoffeeMaker : InteractableBase
         StartCoroutine(BrewRoutine());
     }
 
-    // ... adentro de tu rutina ...
     IEnumerator BrewRoutine()
     {
         yield return new WaitForSeconds(brewTime);
         isPotReady = true;
         if (potVisual != null) potVisual.SetActive(true);
 
-        // Acá está la magia, idéntico a PlayerParanoia
         if (sfxChannel != null) sfxChannel.Raise(SoundID.CoffeReady);
 
-        Debug.Log("Coffee maker is ready again!");
+        Debug.Log("Coffee maker is ready");
     }
 }

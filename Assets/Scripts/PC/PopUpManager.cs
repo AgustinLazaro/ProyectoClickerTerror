@@ -9,7 +9,8 @@ public class PopUpManager : MonoBehaviour
 
     [Header("Menssages")]
     [SerializeField]
-    private string[] messages = {
+    private string[] messages =
+    {
         "ERROR: archivo corrupto",
         "ADVERTENCIA: sistema inestable",
         "ERROR: conexión perdida",

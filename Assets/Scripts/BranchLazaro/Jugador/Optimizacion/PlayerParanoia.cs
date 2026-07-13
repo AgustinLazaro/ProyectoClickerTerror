@@ -49,8 +49,6 @@ public class PlayerParanoia : MonoBehaviour
 
     private void Update()
     {
-        if (statsData == null) return;
-
         HandleBlink();
         HandleStamina();
         UpdateParanoiaPhase();
@@ -59,15 +57,9 @@ public class PlayerParanoia : MonoBehaviour
 
     private void UpdateUI()
     {
-        if (staminaFillBar != null)
-        {
-            staminaFillBar.fillAmount = CurrentStamina / statsData.maxStamina;
-        }
-
-        if (staminaText != null)
-        {
-            staminaText.text = Mathf.RoundToInt(CurrentStamina).ToString() + " / " + statsData.maxStamina.ToString();
-        }
+        staminaFillBar.fillAmount = CurrentStamina / statsData.maxStamina;
+        staminaText.text = Mathf.RoundToInt(CurrentStamina).ToString() + " / " + statsData.maxStamina.ToString();
+        
     }
 
     private void HandleBlink()
@@ -84,11 +76,7 @@ public class PlayerParanoia : MonoBehaviour
     {
         float currentDrainSpeed = timeWithoutBlinking > statsData.penaltyThreshold ? statsData.baseDrainSpeed * statsData.penaltyMultiplier : statsData.baseDrainSpeed;
         CurrentStamina -= currentDrainSpeed * Time.deltaTime;
-
-        if (CurrentStamina <= 0f)
-        {
-            if (managerMarian != null) managerMarian.GameOver();
-        }
+        if (managerMarian != null) managerMarian.GameOver();
     }
 
     private void UpdateParanoiaPhase()

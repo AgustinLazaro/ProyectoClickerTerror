@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.Rendering;
+using UnityEngine.Rendering.PostProcessing; 
 
 public class ParanoiaVFX : MonoBehaviour
 {
@@ -7,9 +7,10 @@ public class ParanoiaVFX : MonoBehaviour
     public PlayerParanoia playerParanoia;
 
     [Header("Efectos Visuales (Volumes)")]
-    public Volume volumeFase1;
-    public Volume volumeFase2;
-    public Volume volumeFase3;
+    public PostProcessVolume volumeFase1;
+    public PostProcessVolume volumeFase2;
+    public PostProcessVolume volumeFase3;
+
     public float speedTransition = 1.5f;
 
     private void Start()
@@ -29,6 +30,7 @@ public class ParanoiaVFX : MonoBehaviour
         float targetFase2 = (phase == 2) ? 1f : 0f;
         float targetFase3 = (phase == 3) ? 1f : 0f;
 
+       
         if (volumeFase1 != null)
             volumeFase1.weight = Mathf.MoveTowards(volumeFase1.weight, targetFase1, speedTransition * Time.deltaTime);
 
