@@ -7,11 +7,11 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI scoreText;
     private int score = 0;
 
-    private GameManagerMarian managerMarian;
+    private GameManagerMarian gameManager;
 
     private void Awake()
     {
-        managerMarian = FindAnyObjectByType<GameManagerMarian>();
+        gameManager = FindAnyObjectByType<GameManagerMarian>();
         ActualizarUI();
     }
 
@@ -19,8 +19,15 @@ public class ScoreManager : MonoBehaviour
     {
         score += cantidad;
         ActualizarUI();
-        managerMarian.UpdateScore(score);   
+        gameManager.UpdateScore(score);
         Debug.Log($"Puntaje actual: {score}");
+    }
+
+    public void CheatMaxScore()
+    {
+        score = 9999;
+        ActualizarUI();
+        gameManager.UpdateScore(score);
     }
 
     private void ActualizarUI()
