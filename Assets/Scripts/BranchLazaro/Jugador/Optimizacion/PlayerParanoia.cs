@@ -1,14 +1,14 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.UI; 
+using UnityEngine.UI;
 using TMPro;
 
 public class PlayerParanoia : MonoBehaviour
 {
-    [Header("Stats (Arrastrá tu cubito ParanoiaStatsSO acá)")]
+    [Header("Stats ")]
     public ParanoiaStatsSO statsData;
 
-    [Header("Conexión de Audio channel")]
+    [Header(" Audio channel")]
     public SFXEventChannelSO sfxChannel;
 
     [Header("Blink System")]
@@ -16,12 +16,13 @@ public class PlayerParanoia : MonoBehaviour
 
     [Header("UI de Estamina")]
     public Image staminaFillBar;
-    public TextMeshProUGUI staminaText;
 
     [Header("Referencias")]
     [SerializeField] private GameManagerMarian managerMarian;
 
     private float _currentStamina;
+    private bool isInitialized = false; 
+
     public float CurrentStamina
     {
         get { return _currentStamina; }
@@ -36,15 +37,24 @@ public class PlayerParanoia : MonoBehaviour
 
     private float timeWithoutBlinking = 0f;
     private bool isBlinking = false;
-    private int lastPhase = 0;
+
+    private void Awake()
+    {
+        if (statsData != null)
+        {
+            _currentStamina = statsData.maxStamina;
+        }
+    }
 
     private void Start()
     {
-        managerMarian = FindAnyObjectByType<GameManagerMarian>();
+        StartCoroutine(InitDelay());
+    }
 
-        if (blackScreenUI != null) blackScreenUI.SetActive(false);
-
-        if (statsData != null) CurrentStamina = statsData.maxStamina;
+    private IEnumerator InitDelay()
+    {
+        yield return new WaitForSeconds(0.5f);
+        isInitialized = true;
     }
 
     private void Update()
@@ -57,9 +67,10 @@ public class PlayerParanoia : MonoBehaviour
 
     private void UpdateUI()
     {
-        staminaFillBar.fillAmount = CurrentStamina / statsData.maxStamina;
-        staminaText.text = Mathf.RoundToInt(CurrentStamina).ToString() + " / " + statsData.maxStamina.ToString();
-        
+        if (statsData != null && staminaFillBar != null)
+        {
+            staminaFillBar.fillAmount = CurrentStamina / statsData.maxStamina;
+        }
     }
 
     private void HandleBlink()
@@ -74,13 +85,20 @@ public class PlayerParanoia : MonoBehaviour
 
     private void HandleStamina()
     {
+        if (statsData == null) return;
+
         float currentDrainSpeed = timeWithoutBlinking > statsData.penaltyThreshold ? statsData.baseDrainSpeed * statsData.penaltyMultiplier : statsData.baseDrainSpeed;
         CurrentStamina -= currentDrainSpeed * Time.deltaTime;
-        if (managerMarian != null) managerMarian.GameOver();
+        if (isInitialized && CurrentStamina <= 0 && managerMarian != null)
+        {
+            managerMarian.GameOver();
+        }
     }
 
     private void UpdateParanoiaPhase()
     {
+        if (statsData == null) return;
+
         float fase1Threshold = statsData.maxStamina * 0.60f;
         float fase2Threshold = statsData.maxStamina * 0.30f;
         float fase3Threshold = statsData.maxStamina * 0.10f;
@@ -109,10 +127,7 @@ public class PlayerParanoia : MonoBehaviour
     public void RefillStamina(float cantidad)
     {
         CurrentStamina += cantidad;
-
         if (sfxChannel != null) sfxChannel.Raise(SoundID.StaminaRestored);
-
-        Debug.Log("Stamina refilled! Ahora tenés: " + CurrentStamina);
     }
 
     public void DrainStamina(float cantidad)

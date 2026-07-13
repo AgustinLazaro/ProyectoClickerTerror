@@ -54,7 +54,7 @@ public class PlayerInteraction : MonoBehaviour
             DrinkCoffee();
         }
 
-        // 1. Detectar el objeto PRIMERO
+
         InteractableBase currentTarget = null;
         if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out RaycastHit hit, rayDistance))
         {
