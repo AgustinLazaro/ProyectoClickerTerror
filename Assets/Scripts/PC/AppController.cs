@@ -42,15 +42,12 @@ public class AppController : MonoBehaviour
     [Header("Fade")]
     [SerializeField] private float fadeDuration = 0.3f;
 
-    //[SerializeField] private SFXEventChannelSO sfxChannel;
     [SerializeField] private PCAudioPlayer pcAudio;
 
     private CanvasGroup currentApp = null;
-    //private PCAudioManager audioManager;
 
     private void Awake()
     {
-        //audioManager = FindAnyObjectByType<PCAudioManager>();
         AddButtonsListeners();
         SetStateCanvasGroup(homeScreen, true);
         CloseAllWindows();

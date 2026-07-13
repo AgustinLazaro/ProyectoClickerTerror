@@ -18,7 +18,6 @@ public class QuickClickGame : MonoBehaviour, IApp
     [SerializeField] private TextMeshProUGUI timeText;
     [SerializeField] private TextMeshProUGUI resultText;
 
-    //[SerializeField] private SFXEventChannelSO sfxChannel;
     [SerializeField] private PCAudioPlayer pcAudio;
 
     private int _currentClicks = 0;
@@ -102,7 +101,6 @@ public class QuickClickGame : MonoBehaviour, IApp
     {
         if (!_isGameActive) return;
 
-        //sfxChannel.Raise(SoundID.Click);
         pcAudio.PlaySound(SoundID.Click);
         _currentClicks++;
         UpdateUI();
@@ -122,7 +120,6 @@ public class QuickClickGame : MonoBehaviour, IApp
 
         if (win)
         {
-            //sfxChannel.Raise(SoundID.WinJingle);
             pcAudio.PlaySound(SoundID.WinJingle);
             _scoreManager.AddPoints(10);
         }

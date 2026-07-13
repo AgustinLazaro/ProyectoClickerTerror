@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-
 public class ScoreManager : MonoBehaviour
 {
     [Header("UI")]
@@ -20,7 +19,6 @@ public class ScoreManager : MonoBehaviour
         score += cantidad;
         ActualizarUI();
         gameManager.UpdateScore(score);
-        Debug.Log($"Puntaje actual: {score}");
     }
 
     public void CheatMaxScore()

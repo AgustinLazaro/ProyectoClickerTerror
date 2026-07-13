@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -29,7 +28,6 @@ public class DragObjectGame : MonoBehaviour, IApp
     [SerializeField] private Color colorC = Color.green;
 
     [SerializeField] private PCAudioPlayer pcAudio;
-    //[SerializeField] private SFXEventChannelSO sfxChannel;
 
     private Vector2 _initialPositionA;    //new
     private Vector2 _initialPositionB;    //new

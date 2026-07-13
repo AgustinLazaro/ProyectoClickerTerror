@@ -1,10 +1,7 @@
-﻿using CharacterScript;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using static UnityEditor.PlayerSettings;
 
 public class AvoidClickGame : MonoBehaviour, IApp
 {
@@ -40,7 +37,6 @@ public class AvoidClickGame : MonoBehaviour, IApp
     [SerializeField] private ScoreManager scoreManager;
 
     [SerializeField] private PCAudioPlayer pcAudio;
-    //[SerializeField] private SFXEventChannelSO sfxChannel;
 
     // Pool de objetos reciclables (evita Instantiate/Destroy en cada ronda)
     private readonly List<ClickableObject> _pool = new List<ClickableObject>();
@@ -49,8 +45,8 @@ public class AvoidClickGame : MonoBehaviour, IApp
     private float _timeLeft;
     private bool _isGameActive = false;
     private int _currentRound = 0;
-    private int _rightsClickedInRound = 0;   //new
-    private int _rightsShowedInRound = 0;   //new  
+    private int _rightsClickedInRound = 0;
+    private int _rightsShowedInRound = 0;  
     private bool _waitingInput = false;
     private int _lastSecondShowing = -1;
 
@@ -80,7 +76,6 @@ public class AvoidClickGame : MonoBehaviour, IApp
         _lastSecondShowing = -1;
         _isGameActive = true;
 
-        //HideAll();
         HideActives();
         resultText.gameObject.SetActive(false);
         UpdateUI(forzar: true);
@@ -93,7 +88,6 @@ public class AvoidClickGame : MonoBehaviour, IApp
         _isGameActive = false;
         StopAllCoroutines();    //new
         HideActives();
-        //HideAll();
     }
 
     private void Update()
@@ -140,7 +134,7 @@ public class AvoidClickGame : MonoBehaviour, IApp
             GameOver(win: true);
     }
 
-    /// <summary>Calcula la dificultad de la ronda, spawnea objetos y devuelve el tiempo visible.</summary>
+    //Calcula la dificultad de la ronda, spawnea objetos y devuelve el tiempo visible.
     private float ShowRound()
     {
         HideActives();
@@ -191,7 +185,7 @@ public class AvoidClickGame : MonoBehaviour, IApp
         return null;
     }
 
-    /// <summary>Busca una posición aleatoria dentro de spawnArea que no se superponga con las ya usadas.</summary>
+    //Busca una posición aleatoria dentro de spawnArea que no se superponga con las ya usadas.
     private Vector2 GenerateValidPosition(List<Vector2> posicionesUsadas)
     {
         Rect rect = spawnArea.rect;

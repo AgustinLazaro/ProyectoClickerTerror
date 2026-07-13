@@ -18,16 +18,13 @@ public class PopUpManager : MonoBehaviour
     };
 
     [SerializeField] private PCAudioPlayer pcAudio;
-    //[SerializeField] private SFXEventChannelSO sfxChannel;
 
     private float _nextTimePopUp;
     private GameObject _currentPopUp = null;
-    //private PCAudioManager _audioManager;
 
     private void Awake()
     {
         _nextTimePopUp = intervalAppearance;
-        //_audioManager = FindAnyObjectByType<PCAudioManager>();
     }
 
     private void Update()
@@ -42,7 +39,6 @@ public class PopUpManager : MonoBehaviour
 
     private void ShowPopUp()
     {
-        //_audioManager.PlayError();
         pcAudio.PlaySound(SoundID.Error);
         string mensaje = messages[Random.Range(0, messages.Length)];
 
@@ -63,7 +59,6 @@ public class PopUpManager : MonoBehaviour
     {
         if (_currentPopUp == null) return;
 
-        //_audioManager.PlayClick();
         pcAudio.PlaySound(SoundID.Click);
 
         Destroy(_currentPopUp);
