@@ -1,200 +1,297 @@
+﻿using CharacterScript;
 using System.Collections;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-//using Random = UnityEngine.Random;
+using static UnityEditor.PlayerSettings;
 
 public class AvoidClickGame : MonoBehaviour, IApp
 {
-    [Header("Configuration")]
-    [SerializeField] private float timeLimit = 15f;
-    [SerializeField] private float intervalAppearance = 1.5f;
-    [SerializeField] private int totalRights = 3;
+    [Header("Tiempo")]
+    [SerializeField] private float timeLimit = 20f;
+    [SerializeField] private float baseTimeVisibility = 2f;
+    [SerializeField] private float minTimeVisibility = 0.8f;
+    [SerializeField] private float roundInterval = 1.5f;
+    [SerializeField] private int totalRounds = 6;
+    [SerializeField] private float timeMargin = 0.3f; // tiempo extra antes de perder si faltan correctos
 
-    [Header("Objects")]
-    [SerializeField] private Button[] rightButtons;
-    [SerializeField] private Button[] wrongButtons;
+    [Header("Dificultad Progresiva")]
+    [SerializeField] private int baseRights = 2;
+    [SerializeField] private int rightsMax = 5;
+    [SerializeField] private int baseWrongs = 2;
+    [SerializeField] private int wrongsMax = 5;
+    [SerializeField] private int roundsToIncreseDificulty = 2; // cada X rondas, +1 objeto
+    [SerializeField] private float visibilityReductionPerRound = 0.12f;
+
+    [Header("Spawn")]
+    [SerializeField] private ClickableObject objectPrefab;
+    [SerializeField] private RectTransform spawnArea;
+    [SerializeField] private Vector2 sizeObject = new Vector2(120f, 120f); // para evitar overlap y bordes
+    [SerializeField] private int maxAttempsPerPosition = 10;
 
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI timeText;
-    [SerializeField] private TextMeshProUGUI rightsText;
+    [SerializeField] private TextMeshProUGUI roundsText;
     [SerializeField] private TextMeshProUGUI resultText;
+
+    [Header("References")]
+    [SerializeField] private AppController appController;
+    [SerializeField] private ScoreManager scoreManager;
 
     [SerializeField] private SFXEventChannelSO sfxChannel;
 
-    private float _timeLeft;
-    private float _timeNextAppearance;
-    private int _rightsClicked = 0;
-    private bool isGameActive = false;
+    // Pool de objetos reciclables (evita Instantiate/Destroy en cada ronda)
+    private readonly List<ClickableObject> _pool = new List<ClickableObject>();
+    private readonly List<ClickableObject> _activesInRound = new List<ClickableObject>();
 
-    private AppController _appController;
-    private ScoreManager _scoreManager;
-    //private PCAudioManager _audioManager;
+    private float _timeLeft;
+    private bool _isGameActive = false;
+    private int _currentRound = 0;
+    private int _rightsClickedInRound = 0;   //new
+    private int _rightsShowedInRound = 0;   //new  
+    private bool _waitingInput = false;
+    private int _lastSecondShowing = -1;
 
     private void Awake()
     {
-        _appController = FindAnyObjectByType<AppController>();
-        _scoreManager = FindAnyObjectByType<ScoreManager>();
-        //_audioManager = FindAnyObjectByType<PCAudioManager>();
-        RegisterButtons();
+        PrecalentarPool(rightsMax + wrongsMax);
     }
 
-    private void RegisterButtons()
+    private void PrecalentarPool(int cantidad)
     {
-        Debug.Log($"Correctos: {rightButtons.Length} | Incorrectos: {wrongButtons.Length}");
-
-        for (int i = 0; i < rightButtons.Length; i++)
+        for (int i = 0; i < cantidad; i++)
         {
-            int index = i;
-            rightButtons[index].onClick.AddListener(() => OnRightClick(rightButtons[index]));
+            var obj = Instantiate(objectPrefab, spawnArea);
+            obj.OnClicked += OnObjetClicked;
+            obj.Hide();
+            _pool.Add(obj);
         }
-
-        for (int i = 0; i < wrongButtons.Length; i++)
-            wrongButtons[i].onClick.AddListener(OnWrongClick);
     }
 
-    public void OnAppOpen()
-    {
-        StartGame();
-    }
-    public void OnAppClose()
-    {
-        StopGame();
-    }
-
+    public void OnAppOpen() => StartGame();
+    public void OnAppClose() => StopGame();
 
     private void StartGame()
     {
         _timeLeft = timeLimit;
-        _timeNextAppearance = intervalAppearance;
-        _rightsClicked = 0;
-        isGameActive = true;
+        _currentRound = 0;
+        _lastSecondShowing = -1;
+        _isGameActive = true;
 
-        HideAll();
+        //HideAll();
+        HideActives();
         resultText.gameObject.SetActive(false);
-        UpdateUI();
+        UpdateUI(forzar: true);
+
+        StartCoroutine(RoundsRoutine());    //new
     }
 
     private void StopGame()
     {
-        isGameActive = false;
-        HideAll();
+        _isGameActive = false;
+        StopAllCoroutines();    //new
+        HideActives();
+        //HideAll();
     }
 
     private void Update()
     {
-        if (!isGameActive) return;
-        _timeLeft -= Time.deltaTime;
-        _timeNextAppearance -= Time.deltaTime;
-        UpdateUI();
+        if (!_isGameActive) return;
 
-        if(_timeNextAppearance <= 0f)
-        {
-            DisplayRandom();
-            _timeNextAppearance = intervalAppearance;
-        }
+        _timeLeft -= Time.deltaTime;
+        UpdateUI();
 
         if (_timeLeft <= 0f)
             GameOver(win: false);
     }
 
-    private void DisplayRandom()
+    private IEnumerator RoundsRoutine()
     {
-        HideAll();
-
-        
-        bool showCorrect = Random.value > 0.4f;
-        Debug.Log($"Mostrando: {(showCorrect ? "correcto" : "incorrecto")}");
-
-
-        if (showCorrect)
+        while (_isGameActive && _currentRound < totalRounds)
         {
-            var button = rightButtons[Random.Range(0, rightButtons.Length)];
-            button.gameObject.SetActive(true);
+            yield return new WaitForSeconds(roundInterval);
+            if (!_isGameActive) yield break;
+
+            float tiempoVisible = ShowRound();
+            yield return new WaitForSeconds(tiempoVisible);
+            if (!_isGameActive) yield break;
+
+            if (_rightsClickedInRound < _rightsShowedInRound)
+            {
+                //Margen de gracia: los objetos siguen clickeables mientras esperamos.
+                yield return new WaitForSeconds(timeMargin);
+                if (!_isGameActive) yield break;
+
+                if(_rightsClickedInRound < _rightsShowedInRound) 
+                {
+                    GameOver(win: false);
+                    yield break;
+                }
+            }
+
+            HideActives();
+            _currentRound++;
+            UpdateUI(forzar: true);
         }
-        else
-        {
-            var button = wrongButtons[Random.Range(0, wrongButtons.Length)];
-            button.gameObject.SetActive(true);
-        }
-    }
 
-    private void HideAll()
-    {
-        foreach (var button in rightButtons)
-            button.gameObject.SetActive(false);
-
-        foreach (var button in wrongButtons)
-            button.gameObject.SetActive(false);
-    }
-
-    private void OnRightClick(Button button)
-    {
-        Debug.Log($"Click correcto en: {button.name}");
-        if (!isGameActive) return;
-
-        //_audioManager.PlayClick();
-        sfxChannel.Raise(SoundID.Click);
-        button.gameObject.SetActive(false);
-        _rightsClicked++;
-        UpdateUI();
-
-        if (_rightsClicked >= totalRights)
+        if (_isGameActive)
             GameOver(win: true);
     }
 
-    private void OnWrongClick()
+    /// <summary>Calcula la dificultad de la ronda, spawnea objetos y devuelve el tiempo visible.</summary>
+    private float ShowRound()
     {
-        Debug.Log("Click incorrecto");
-        if (!isGameActive) return;
+        HideActives();
+        _rightsClickedInRound = 0;
+        _waitingInput = true;
 
-        //_audioManager.PlayClick();
-        sfxChannel.Raise(SoundID.Click);
-        GameOver(win: false);
+        int cantidadCorrectos = Mathf.Clamp(
+            baseRights + _currentRound / roundsToIncreseDificulty,
+            baseRights, rightsMax);
+
+        int cantidadIncorrectos = Mathf.Clamp(
+            baseWrongs + _currentRound / roundsToIncreseDificulty,
+            baseWrongs, wrongsMax);
+
+        _rightsShowedInRound = cantidadCorrectos;
+
+        var posicionesUsadas = new List<Vector2>();
+        SpawnGroup(cantidadCorrectos, esCorrecto: true, posicionesUsadas);
+        SpawnGroup(cantidadIncorrectos, esCorrecto: false, posicionesUsadas);
+
+        return Mathf.Max(minTimeVisibility,
+            baseTimeVisibility - _currentRound * visibilityReductionPerRound);
+    }
+
+    private void SpawnGroup(int cantidad, bool esCorrecto, List<Vector2> posicionesUsadas)
+    {
+        for (int i = 0; i < cantidad; i++)
+        {
+            var obj = GetFromPool();
+            if (obj == null) break; // pool agotado, no debería pasar si correctosMax+incorrectosMax está bien seteado
+
+            Vector2 posicion = GenerateValidPosition(posicionesUsadas);
+            posicionesUsadas.Add(posicion);
+
+            obj.SetPosition(posicion);
+            obj.Configurate(esCorrecto);
+            _activesInRound.Add(obj);
+        }
+    }
+
+    private ClickableObject GetFromPool()
+    {
+        foreach (var obj in _pool)
+        {
+            if (!obj.gameObject.activeSelf)
+                return obj;
+        }
+        return null;
+    }
+
+    /// <summary>Busca una posición aleatoria dentro de spawnArea que no se superponga con las ya usadas.</summary>
+    private Vector2 GenerateValidPosition(List<Vector2> posicionesUsadas)
+    {
+        Rect rect = spawnArea.rect;
+        float margenX = sizeObject.x * 0.5f;
+        float margenY = sizeObject.y * 0.5f;
+
+        for (int intento = 0; intento < maxAttempsPerPosition; intento++)
+        {
+            float x = Random.Range(rect.xMin + margenX, rect.xMax - margenX);
+            float y = Random.Range(rect.yMin + margenY, rect.yMax - margenY);
+            Vector2 candidata = new Vector2(x, y);
+
+            bool superpone = false;
+            foreach (var usada in posicionesUsadas)
+            {
+                if (Vector2.Distance(candidata, usada) < Mathf.Max(sizeObject.x, sizeObject.y))
+                {
+                    superpone = true;
+                    break;
+                }
+            }
+
+            if (!superpone)
+                return candidata;
+        }
+
+        // Si no encontró lugar libre en los intentos permitidos, devuelve la última candidata igual.
+        float xFallback = Random.Range(rect.xMin + margenX, rect.xMax - margenX);
+        float yFallback = Random.Range(rect.yMin + margenY, rect.yMax - margenY);
+        return new Vector2(xFallback, yFallback);
+    }
+
+    private void HideActives()
+    {
+        foreach (var obj in _activesInRound)
+            obj.Hide();
+
+        _activesInRound.Clear();
+        _waitingInput = false;
+    }
+
+    private void OnObjetClicked(ClickableObject obj)
+    {
+        if (!_isGameActive || !_waitingInput) return;
+
+        if (obj.IsCorrect)
+        {
+            obj.Hide();
+            _activesInRound.Remove(obj);
+            _rightsClickedInRound++;
+            sfxChannel.Raise(SoundID.Click);
+        }
+        else
+        {
+            sfxChannel.Raise(SoundID.Error);
+            GameOver(win: false);
+        }
     }
 
     private void GameOver(bool win)
     {
-        isGameActive = false;
-        HideAll();
+        _isGameActive = false;
+        StopAllCoroutines();
+        HideActives();
+
         resultText.gameObject.SetActive(true);
-        resultText.text = win ? "You win!" : "You lose";
+        resultText.text = win ? "¡Ganaste!" : "¡Perdiste!";
 
         if (win)
-        {
-            //_audioManager.PlayWinJingle();
             sfxChannel.Raise(SoundID.WinJingle);
-            _scoreManager.AddPoints(30);
-        }
         else
-        {
-            //_audioManager.PlayLoseJingle();
             sfxChannel.Raise(SoundID.LoseJingle);
-        }
 
+        scoreManager.AddPoints(win ? 10 : 0);
         StartCoroutine(BackToHomeScreen());
     }
 
     private IEnumerator BackToHomeScreen()
     {
-        yield return new WaitForSeconds(2f);
-        _appController.CloseCurrentApp();
+        yield return new WaitForSeconds(1.5f);
+        appController.CloseCurrentApp();
     }
 
-    private void UpdateUI()
+    private void UpdateUI(bool forzar = false)
     {
-        timeText.text = $"{Mathf.CeilToInt(_timeLeft)}s";
-        rightsText.text = $"{_rightsClicked} / {totalRights}";
+        int segundoActual = Mathf.CeilToInt(_timeLeft);
+        if (forzar || segundoActual != _lastSecondShowing)
+        {
+            timeText.text = $"{segundoActual}s";
+            _lastSecondShowing = segundoActual;
+        }
+
+        roundsText.text = $"Ronda {_currentRound + 1} / {totalRounds}";
     }
 
     private void OnDestroy()
     {
-        foreach (var button in rightButtons)
-            button.onClick.RemoveAllListeners();
-
-        foreach (var button in wrongButtons)
-            button.onClick.RemoveAllListeners();
+        foreach (var obj in _pool)
+        {
+            if (obj != null)
+                obj.OnClicked -= OnObjetClicked;
+        }
     }
 }
