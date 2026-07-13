@@ -1,61 +1,67 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
+using TMPro;
 
 public class TimingGame : MonoBehaviour, IApp
 {
     [Header("Configuracion")]
-    [SerializeField] private float oscilationSpeed = 1.5f;
-    [SerializeField] private float timeLmit = 10f;
-    [SerializeField] private float greenZoneSize = 0.15f; // 0 a 1
+    [SerializeField] private float timeLimit = 10f;
+    [SerializeField] private float barSpeed = 1.5f;
+    //[SerializeField] private float greenZoneSize = 0.15f; // 0 a 1
+    [SerializeField] private float greenZoneSpeed = 0.8f;      // nuevo — velocidad de movimiento de la zona
+    [SerializeField] private float initialGreenZoneSize = 0.3f;  // nuevo — tamaño inicial (0 a 1)
+    [SerializeField] private float minimumGreenZoneSize = 0.05f;  // nuevo — tamaño mínimo
+    [SerializeField] private float shrinkSpeed = 0.02f;       // nuevo — cuánto se achica por segundo
 
     [Header("UI")]
     [SerializeField] private Button stopButton;
-    [SerializeField] private Slider SliderBar;
+    [SerializeField] private Slider sliderBar;
     [SerializeField] private RectTransform greenZone;
-    [SerializeField] private TextMeshProUGUI timeText;
+    [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private TextMeshProUGUI resultText;
 
+    [Header("References")]
+    [SerializeField] private AppController appController;
+    [SerializeField] private ScoreManager scoreManager;
     [SerializeField] private SFXEventChannelSO sfxChannel;
 
-    private float _timeLeft;
-    private float _direction = 1f;
-    private bool isGameActive = false;
+    private float _remainingTime;
+    private float _barDirection = 1f;
+    private float _zoneDirection = 1f;
+    private float _currentGreenZoneSize;
+    private float _greenZonePosition;       // posicion fija de la zona verde (0 a 1)
+    private bool _isGameActive = false;
 
-    private AppController _appController;
-    private ScoreManager _scoreManager;
-    //private PCAudioManager _audioManager;
-
-    // posicion fija de la zona verde (0 a 1)
     private float greenZoneMin;
     private float greenZoneMax;
 
     private void Awake()
     {
-        _appController = FindAnyObjectByType<AppController>();
-        _scoreManager = FindAnyObjectByType<ScoreManager>();
-        //_audioManager = FindAnyObjectByType<PCAudioManager>();
         stopButton.onClick.AddListener(OnStop);
-        GreenZoneConfiguration();
+        //GreenZoneConfiguration();
     }
 
-    private void GreenZoneConfiguration()
-    {
-        // zona verde centrada en 0.5, con el tamaño configurado
-        float center = 0.5f;
-        greenZoneMin = center - greenZoneSize / 2f;
-        greenZoneMax = center + greenZoneSize / 2f;
-    }
+    //private void GreenZoneConfiguration()
+    //{
+    //    // zona verde centrada en 0.5, con el tamaño configurado
+    //    float center = 0.5f;
+    //    greenZoneMin = center - greenZoneSize / 2f;
+    //    greenZoneMax = center + greenZoneSize / 2f;
+    //}
 
     public void OnAppOpen() => StartGame();
     public void OnAppClose() => StopGame();
 
     private void StartGame()
     {
-        _timeLeft = timeLmit;
-        SliderBar.value = 0f;
-        _direction = 1f;
-        isGameActive = true;
+        _remainingTime = timeLimit;
+        sliderBar.value = 0f;
+        _barDirection = 1f;
+        _zoneDirection = 1f;
+        _currentGreenZoneSize = initialGreenZoneSize;
+        _greenZonePosition = 0.5f;
+        _isGameActive = true;
 
         resultText.gameObject.SetActive(false);
         ActualizarUI();
@@ -63,77 +69,136 @@ public class TimingGame : MonoBehaviour, IApp
 
     private void StopGame()
     {
-        isGameActive = false;
+        _isGameActive = false;
     }
 
     private void Update()
     {
-        if (!isGameActive) return;
+        if (!_isGameActive) return;
 
-        // oscila el slider de 0 a 1
-        SliderBar.value += _direction * oscilationSpeed * Time.deltaTime;
+        _remainingTime -= Time.deltaTime;
+        timerText.text = $"{Mathf.CeilToInt(_remainingTime)}";
 
-        if (SliderBar.value >= 1f)
-        {
-            SliderBar.value = 1f;
-            _direction = -1f;
-        }
-        else if (SliderBar.value <= 0f)
-        {
-            SliderBar.value = 0f;
-            _direction = 1f;
-        }
+        MoveBar();
+        MoveAndShrinkGreenZone();
 
-        _timeLeft -= Time.deltaTime;
-        ActualizarUI();
-
-        if (_timeLeft <= 0f)
+        if (_remainingTime <= 0f)
             GameOver(win: false);
     }
 
+    private void MoveBar()
+    {
+        sliderBar.value += _barDirection * barSpeed * Time.deltaTime;
+
+        if (sliderBar.value >= 1f)
+        {
+            sliderBar.value = 1f;
+            _barDirection = -1f;
+        }
+        else if (sliderBar.value <= 0f)
+        {
+            sliderBar.value = 0f;
+            _barDirection = 1f;
+        }
+    }
+
+    private void MoveAndShrinkGreenZone()
+    {
+        // Move the green zone
+        _greenZonePosition += _zoneDirection * greenZoneSpeed * Time.deltaTime;
+
+        // Bounce at the edges while considering the zone size
+        float halfSize = _currentGreenZoneSize / 2f;
+
+        if (_greenZonePosition + halfSize >= 1f)
+        {
+            _greenZonePosition = 1f - halfSize;
+            _zoneDirection = -1f;
+        }
+        else if (_greenZonePosition - halfSize <= 0f)
+        {
+            _greenZonePosition = halfSize;
+            _zoneDirection = 1f;
+        }
+
+        // Gradually shrink the green zone
+        _currentGreenZoneSize -= shrinkSpeed * Time.deltaTime;
+        _currentGreenZoneSize = Mathf.Max(_currentGreenZoneSize, minimumGreenZoneSize);
+
+        // Update boundaries
+        greenZoneMin = _greenZonePosition - _currentGreenZoneSize / 2f;
+        greenZoneMax = _greenZonePosition + _currentGreenZoneSize / 2f;
+
+        UpdateGreenZone();
+    }
+
+    private void UpdateGreenZone()
+    {
+        float totalWidth = sliderBar.GetComponent<RectTransform>().rect.width;
+
+        // posición desde el extremo izquierdo, igual que el handle del slider
+        float posX = (_greenZonePosition * totalWidth) - (totalWidth / 2f);
+
+        greenZone.anchoredPosition = new Vector2(posX, greenZone.anchoredPosition.y);
+        greenZone.sizeDelta = new Vector2(
+            _currentGreenZoneSize * totalWidth,
+            greenZone.sizeDelta.y
+        );
+    }
+
+//greenZone.anchoredPosition = new Vector2(
+//    (_greenZonePosition - 0.5f) * totalWidth,
+//    greenZone.anchoredPosition.y
+//);
+
+//greenZone.sizeDelta = new Vector2(
+//    _currentGreenZoneSize * totalWidth,
+//    greenZone.sizeDelta.y
+//);
+
     private void OnStop()
     {
-        if (!isGameActive) return;
+        if (!_isGameActive) return;
 
-        //_audioManager.PlayClick();
         sfxChannel.Raise(SoundID.Click);
 
-        bool enZonaVerde = SliderBar.value >= greenZoneMin &&
-                           SliderBar.value <= greenZoneMax;
+        bool isInsideGreenZone = 
+            sliderBar.value >= greenZoneMin &&
+            sliderBar.value <= greenZoneMax;
 
-        GameOver(win: enZonaVerde);
+        Debug.Log($"Valor barra: {sliderBar.value:F3} | ZonaMin: {greenZoneMin:F3} | ZonaMax: {greenZoneMax:F3} | Dentro: {isInsideGreenZone}");
+
+        GameOver(win: isInsideGreenZone);
     }
 
     private void GameOver(bool win)
     {
-        isGameActive = false;
+        _isGameActive = false;
         resultText.gameObject.SetActive(true);
         resultText.text = win ? "¡Ganaste!" : "¡Perdiste!";
 
         if (win)
         {
-            //_audioManager.PlayWinJingle();
             sfxChannel.Raise(SoundID.WinJingle);
-            _scoreManager.AddPoints(40);
+            scoreManager.AddPoints(40);
         }
         else
         {
-            //_audioManager.PlayLoseJingle();
             sfxChannel.Raise(SoundID.LoseJingle);
         }
 
         StartCoroutine(VolverAlHomeScreen());
     }
 
-    private System.Collections.IEnumerator VolverAlHomeScreen()
+    private IEnumerator VolverAlHomeScreen()
     {
         yield return new WaitForSeconds(1.5f);
-        _appController.CloseCurrentApp();
+        appController.CloseCurrentApp();
     }
 
     private void ActualizarUI()
     {
-        timeText.text = $"{Mathf.CeilToInt(_timeLeft)}s";
+        timerText.text = $"{Mathf.CeilToInt(_remainingTime)}s";
     }
 
     private void OnDestroy()

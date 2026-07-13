@@ -35,7 +35,7 @@ namespace CharacterScript
 
         void Update()
         {
-            // We are grounded, so recalculate move _direction based on axes
+            // We are grounded, so recalculate move _barDirection based on axes
             Vector3 forward = transform.TransformDirection(Vector3.forward);
             Vector3 right = transform.TransformDirection(Vector3.right);
             // Press Left Shift to run
