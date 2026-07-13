@@ -9,7 +9,7 @@ public class CheatManagerMarian : MonoBehaviour
 
     [Header("God Mode Settings")]
     [SerializeField] private GameManagerMarian gameManager;
-    [SerializeField] private PlayerParanoia paranoiaManager;
+    //[SerializeField] private PlayerParanoia paranoiaManager;
     [SerializeField] private ScoreManager scoreManager;
     [SerializeField] private AppController appController;
 

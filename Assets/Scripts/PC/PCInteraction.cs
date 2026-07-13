@@ -35,11 +35,9 @@ public class PCInteraction : MonoBehaviour
 
         originalCameraPosition = playerCamera.position;
         originalCameraRotation = playerCamera.rotation;
-
         
         playerMovement.enabled = false;
         mouseLook.enabled = false;
-        
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
