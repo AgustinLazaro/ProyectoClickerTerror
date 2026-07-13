@@ -16,12 +16,14 @@ public class BookTutorial : InteractableBase
 
     public override void OnPressE(PlayerInteraction player)
     {
-            Debug.LogWarning("Falta asignar el Tutorial Panel en el script del libro.");
-            return;
       
-        isPanelOpen = !isPanelOpen;
+        if (tutorialPanel == null)
+        {
+           
+            return; 
+        }
 
-     
+        isPanelOpen = !isPanelOpen;
         tutorialPanel.SetActive(isPanelOpen);
     }
 }

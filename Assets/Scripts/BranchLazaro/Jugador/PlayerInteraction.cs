@@ -95,7 +95,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         CurrentCupState = CupState.Empty;
         Debug.Log("Coffee consumed.");
-        if (paranoiaManager != null) paranoiaManager.RefillStamina(30f);
+        if (paranoiaManager != null) paranoiaManager.RefillStamina(50f);
     }
 
     public void SitInChair(Chair chair)
