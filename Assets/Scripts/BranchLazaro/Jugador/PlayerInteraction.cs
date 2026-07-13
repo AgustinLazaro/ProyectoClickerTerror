@@ -5,7 +5,6 @@ public class PlayerInteraction : MonoBehaviour
     [Header("Chair")]
     public bool isSitting = false;
     private Chair currentChair;
-
    
     [Header("Raycast Settings")]
     public float rayDistance = 3f;
@@ -61,7 +60,7 @@ public class PlayerInteraction : MonoBehaviour
             currentTarget = hit.collider.GetComponent<InteractableBase>();
         }
 
-        // 2. Lógica de Hover (Ahora currentTarget YA TIENE el valor)
+        // 2. Lógica de Hover (Ahora _currentTarget YA TIENE el valor)
         if (currentTarget != previousTarget)
         {
             if (previousTarget != null) previousTarget.OnHoverExit();
