@@ -42,14 +42,12 @@ public class AppController : MonoBehaviour
     [Header("Fade")]
     [SerializeField] private float fadeDuration = 0.3f;
 
-    [SerializeField] private SFXEventChannelSO sfxChannel;
+    [SerializeField] private PCAudioPlayer pcAudio;
 
     private CanvasGroup currentApp = null;
-    //private PCAudioManager audioManager;
 
     private void Awake()
     {
-        //audioManager = FindAnyObjectByType<PCAudioManager>();
         AddButtonsListeners();
         SetStateCanvasGroup(homeScreen, true);
         CloseAllWindows();
@@ -77,15 +75,10 @@ public class AppController : MonoBehaviour
 
         currentApp = app;
         app.GetComponent<IApp>()?.OnAppOpen();
-        //audioManager.PlayOpen();
-        sfxChannel.Raise(SoundID.Open);
+        pcAudio.PlaySound(SoundID.Open);
 
         StartCoroutine(FadeIn(app));
         StartCoroutine(FadeOut(homeScreen));
-
-        //SetStateCanvasGroup(homeScreen, false);
-        //SetStateCanvasGroup(app, true);
-        //app.GetComponent<IApp>()?.OnAppOpen();
     }
 
     public void CloseCurrentApp()
@@ -93,8 +86,7 @@ public class AppController : MonoBehaviour
         if (currentApp == null) return;
 
         currentApp.GetComponent<IApp>()?.OnAppClose();
-        //audioManager.PlayClose();
-        sfxChannel.Raise(SoundID.Close);
+        pcAudio.PlaySound(SoundID.Close);
 
         StartCooldown(currentApp);
 
@@ -102,9 +94,6 @@ public class AppController : MonoBehaviour
         StartCoroutine(FadeIn(homeScreen));
 
         currentApp = null;
-
-        //SetStateCanvasGroup(currentApp, false);
-        //SetStateCanvasGroup(homeScreen, true);
     }
 
     private void StartCooldown(CanvasGroup app)
@@ -188,6 +177,19 @@ public class AppController : MonoBehaviour
         canvasGroup.alpha = state ? 1 : 0;
         canvasGroup.interactable = state;
         canvasGroup.blocksRaycasts = state;
+    }
+
+    public void CheatDeactivateCooldowns()
+    {
+        app1Button.interactable = true;
+        app2Button.interactable = true;
+        app3Button.interactable = true;
+        app4Button.interactable = true;
+
+        cooldownText1.gameObject.SetActive(false);
+        cooldownText2.gameObject.SetActive(false);
+        cooldownText3.gameObject.SetActive(false);
+        cooldownText4.gameObject.SetActive(false);
     }
 
     private void OnDestroy()

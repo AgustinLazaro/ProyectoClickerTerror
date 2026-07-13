@@ -18,20 +18,18 @@ public class QuickClickGame : MonoBehaviour, IApp
     [SerializeField] private TextMeshProUGUI timeText;
     [SerializeField] private TextMeshProUGUI resultText;
 
-    [SerializeField] private SFXEventChannelSO sfxChannel;
+    [Header("References")]
+    [SerializeField] private AppController appController;
+    [SerializeField] private ScoreManager scoreManager;
+    [SerializeField] private PCAudioPlayer pcAudio;
 
     private int _currentClicks = 0;
     private float _timeLeft = 0f;
     private bool _isGameActive = false;
     private Vector2 _direction;
 
-    private AppController _appController;
-    private ScoreManager _scoreManager;
-
     private void Awake()
     {
-        _appController = FindAnyObjectByType<AppController>();
-        _scoreManager = FindAnyObjectByType<ScoreManager>();
         clickButton.onClick.AddListener(OnClick);
     }
 
@@ -101,7 +99,7 @@ public class QuickClickGame : MonoBehaviour, IApp
     {
         if (!_isGameActive) return;
 
-        sfxChannel.Raise(SoundID.Click);
+        pcAudio.PlaySound(SoundID.Click);
         _currentClicks++;
         UpdateUI();
 
@@ -120,12 +118,12 @@ public class QuickClickGame : MonoBehaviour, IApp
 
         if (win)
         {
-            sfxChannel.Raise(SoundID.WinJingle);
-            _scoreManager.AddPoints(10);
+            pcAudio.PlaySound(SoundID.WinJingle);
+            scoreManager.AddPoints(10);
         }
         else
         {
-            sfxChannel.Raise(SoundID.LoseJingle);
+            pcAudio.PlaySound(SoundID.LoseJingle);
         }
 
             StartCoroutine(BackToHomeScreen());
@@ -134,7 +132,7 @@ public class QuickClickGame : MonoBehaviour, IApp
     private IEnumerator BackToHomeScreen()
     {
         yield return new WaitForSeconds(2f);  //muestra resultados brevemente
-        _appController.CloseCurrentApp();
+        appController.CloseCurrentApp();
     }
 
     private void UpdateUI()

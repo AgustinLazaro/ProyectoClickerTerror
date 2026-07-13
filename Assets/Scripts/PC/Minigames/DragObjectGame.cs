@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -28,7 +27,10 @@ public class DragObjectGame : MonoBehaviour, IApp
     [SerializeField] private Color colorB = new Color(1f, 0.5f, 0f); // naranja
     [SerializeField] private Color colorC = Color.green;
 
-    [SerializeField] private SFXEventChannelSO sfxChannel;
+    [Header("References")]
+    [SerializeField] private AppController appController;
+    [SerializeField] private ScoreManager scoreManager;
+    [SerializeField] private PCAudioPlayer pcAudio;
 
     private Vector2 _initialPositionA;    //new
     private Vector2 _initialPositionB;    //new
@@ -38,14 +40,8 @@ public class DragObjectGame : MonoBehaviour, IApp
     private bool isGameActive = false;
     private int _currentOrder = 0;    // 0=A, 1=B, 2=C
 
-    private AppController _appController;
-    private ScoreManager _scoreManager;
-
     private void Awake()
     {
-        _appController = FindAnyObjectByType<AppController>();
-        _scoreManager = FindAnyObjectByType<ScoreManager>();
-
         _initialPositionA = objectPurple.anchoredPosition;
         _initialPositionB = objectOrange.anchoredPosition;
         _initialPositionC = objectGreen.anchoredPosition;
@@ -90,7 +86,7 @@ public class DragObjectGame : MonoBehaviour, IApp
         if (!isGameActive) return;
         if (draggedObject != GetCurrentObject()) return;    // no es el turno de este objet
 
-        sfxChannel.Raise(SoundID.Click);
+        pcAudio.PlaySound(SoundID.Click);
     }
 
     public void OnDrag(RectTransform draggedObject, Vector2 delta)
@@ -163,12 +159,12 @@ public class DragObjectGame : MonoBehaviour, IApp
 
         if (win)
         {
-            sfxChannel.Raise(SoundID.WinJingle);
-            _scoreManager.AddPoints(20);
+            pcAudio.PlaySound(SoundID.WinJingle);
+            scoreManager.AddPoints(20);
         }
         else
         {
-            sfxChannel.Raise(SoundID.LoseJingle);
+            pcAudio.PlaySound(SoundID.LoseJingle);
         }
 
         StartCoroutine(BackToHomeScreen());
@@ -177,7 +173,7 @@ public class DragObjectGame : MonoBehaviour, IApp
     private IEnumerator BackToHomeScreen()
     {
         yield return new WaitForSeconds(2f);
-        _appController.CloseCurrentApp();
+        appController.CloseCurrentApp();
     }
 
     private void UpdateTextOrder()

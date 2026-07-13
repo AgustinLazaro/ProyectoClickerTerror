@@ -5,8 +5,6 @@ using System.Collections;
 
 public class UIButtonFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-   
-
     [Header("Buttons")]
     [SerializeField] private Button button;
 
@@ -30,15 +28,12 @@ public class UIButtonFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     private void OnButtonClicked()
     {
-        
-        Debug.Log("OnButtonClicked", gameObject);
+        //Debug.Log("OnButtonClicked", gameObject);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("OnPointerEnter", gameObject);
-       
-
+        //Debug.Log("OnPointerEnter", gameObject);
         if (expanding != null)   
             StopCoroutine(expanding);
 
@@ -48,8 +43,7 @@ public class UIButtonFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("OnPointerExit", gameObject);
-
+        //Debug.Log("OnPointerExit", gameObject);
         if (expanding != null)  
             StopCoroutine(expanding);
 
@@ -75,8 +69,7 @@ public class UIButtonFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
             yield return null;
         }
-
-        Debug.Log("End: Expanding");
+        //Debug.Log("End: Expanding");
         transform.localScale = targetScale;
         expanding = null;
     }
@@ -98,8 +91,7 @@ public class UIButtonFX : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
             yield return null;
         }
-
-        Debug.Log("End: Collapsing");
+        //Debug.Log("End: Collapsing");
         transform.localScale = targetScale;
         expanding = null;
     }
