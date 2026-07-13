@@ -8,7 +8,6 @@ public class TimingGame : MonoBehaviour, IApp
     [Header("Configuracion")]
     [SerializeField] private float timeLimit = 10f;
     [SerializeField] private float barSpeed = 1.5f;
-    //[SerializeField] private float greenZoneSize = 0.15f; // 0 a 1
     [SerializeField] private float greenZoneSpeed = 0.8f;      // nuevo — velocidad de movimiento de la zona
     [SerializeField] private float initialGreenZoneSize = 0.3f;  // nuevo — tamaño inicial (0 a 1)
     [SerializeField] private float minimumGreenZoneSize = 0.05f;  // nuevo — tamaño mínimo
@@ -18,13 +17,15 @@ public class TimingGame : MonoBehaviour, IApp
     [SerializeField] private Button stopButton;
     [SerializeField] private Slider sliderBar;
     [SerializeField] private RectTransform greenZone;
+    [SerializeField] private RectTransform handleArea; // arrastrar "Handle Slide Area"
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private TextMeshProUGUI resultText;
 
     [Header("References")]
     [SerializeField] private AppController appController;
     [SerializeField] private ScoreManager scoreManager;
-    [SerializeField] private SFXEventChannelSO sfxChannel;
+    [SerializeField] private PCAudioPlayer pcAudio;
+    //[SerializeField] private SFXEventChannelSO sfxChannel;
 
     private float _remainingTime;
     private float _barDirection = 1f;
@@ -39,16 +40,7 @@ public class TimingGame : MonoBehaviour, IApp
     private void Awake()
     {
         stopButton.onClick.AddListener(OnStop);
-        //GreenZoneConfiguration();
     }
-
-    //private void GreenZoneConfiguration()
-    //{
-    //    // zona verde centrada en 0.5, con el tamaño configurado
-    //    float center = 0.5f;
-    //    greenZoneMin = center - greenZoneSize / 2f;
-    //    greenZoneMax = center + greenZoneSize / 2f;
-    //}
 
     public void OnAppOpen() => StartGame();
     public void OnAppClose() => StopGame();
@@ -134,7 +126,8 @@ public class TimingGame : MonoBehaviour, IApp
 
     private void UpdateGreenZone()
     {
-        float totalWidth = sliderBar.GetComponent<RectTransform>().rect.width;
+        //float totalWidth = sliderBar.GetComponent<RectTransform>().rect.width;
+        float totalWidth = handleArea.rect.width;
 
         // posición desde el extremo izquierdo, igual que el handle del slider
         float posX = (_greenZonePosition * totalWidth) - (totalWidth / 2f);
@@ -146,21 +139,11 @@ public class TimingGame : MonoBehaviour, IApp
         );
     }
 
-//greenZone.anchoredPosition = new Vector2(
-//    (_greenZonePosition - 0.5f) * totalWidth,
-//    greenZone.anchoredPosition.y
-//);
-
-//greenZone.sizeDelta = new Vector2(
-//    _currentGreenZoneSize * totalWidth,
-//    greenZone.sizeDelta.y
-//);
-
     private void OnStop()
     {
         if (!_isGameActive) return;
 
-        sfxChannel.Raise(SoundID.Click);
+        pcAudio.PlaySound(SoundID.Click);
 
         bool isInsideGreenZone = 
             sliderBar.value >= greenZoneMin &&
@@ -179,12 +162,12 @@ public class TimingGame : MonoBehaviour, IApp
 
         if (win)
         {
-            sfxChannel.Raise(SoundID.WinJingle);
+            pcAudio.PlaySound(SoundID.WinJingle);
             scoreManager.AddPoints(40);
         }
         else
         {
-            sfxChannel.Raise(SoundID.LoseJingle);
+            pcAudio.PlaySound(SoundID.LoseJingle);
         }
 
         StartCoroutine(VolverAlHomeScreen());

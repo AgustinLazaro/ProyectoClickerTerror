@@ -2717,6 +2717,56 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a837e2292ad34f147b05821698268895, type: 3}
+--- !u!1 &199115036
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 199115037}
+  - component: {fileID: 199115038}
+  m_Layer: 0
+  m_Name: CheatManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &199115037
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 199115036}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1456076892}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &199115038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 199115036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 404814b2a3ca2874db0044b354d557e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CheatManagerMarian
+  keyWin: 282
+  keyLose: 283
+  keyGodMode: 284
+  gameManager: {fileID: 624447969}
+  scoreManager: {fileID: 3534649253185608951}
+  appController: {fileID: 3534649253185608950}
 --- !u!1001 &207778539
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20627,6 +20677,7 @@ Transform:
   - {fileID: 877049933}
   - {fileID: 3653935}
   - {fileID: 624447968}
+  - {fileID: 199115037}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1460052836
@@ -34118,6 +34169,28 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9219b489974810140afc3ccdd678adb4, type: 3}
+--- !u!114 &3534649253185608950 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7920374723278164939, guid: 9219b489974810140afc3ccdd678adb4, type: 3}
+  m_PrefabInstance: {fileID: 3534649253185608949}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54e7218dd8f74fc418deb58cd204ba61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AppController
+--- !u!114 &3534649253185608951 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3172938684675397841, guid: 9219b489974810140afc3ccdd678adb4, type: 3}
+  m_PrefabInstance: {fileID: 3534649253185608949}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b2504c0de05f104f9f1f752851a247d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScoreManager
 --- !u!1 &3542816521383240226
 GameObject:
   m_ObjectHideFlags: 0
