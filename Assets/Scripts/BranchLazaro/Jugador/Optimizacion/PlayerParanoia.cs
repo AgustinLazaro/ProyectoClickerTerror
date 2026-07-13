@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI; 
+using TMPro;
 
 public class PlayerParanoia : MonoBehaviour
 {
@@ -12,10 +14,13 @@ public class PlayerParanoia : MonoBehaviour
     [Header("Blink System")]
     public GameObject blackScreenUI;
 
+    [Header("UI de Estamina")]
+    public Image staminaFillBar;
+    public TextMeshProUGUI staminaText;
+
     [Header("Referencias")]
     [SerializeField] private GameManagerMarian managerMarian;
 
-   
     private float _currentStamina;
     public float CurrentStamina
     {
@@ -35,7 +40,6 @@ public class PlayerParanoia : MonoBehaviour
 
     private void Start()
     {
-        // Corregido: Ahora sí se asigna a la variable
         managerMarian = FindAnyObjectByType<GameManagerMarian>();
 
         if (blackScreenUI != null) blackScreenUI.SetActive(false);
@@ -45,11 +49,25 @@ public class PlayerParanoia : MonoBehaviour
 
     private void Update()
     {
-        if (statsData == null) return; // Seguridad si te olvidás de arrastrar el cubito
+        if (statsData == null) return;
 
         HandleBlink();
         HandleStamina();
         UpdateParanoiaPhase();
+        UpdateUI();
+    }
+
+    private void UpdateUI()
+    {
+        if (staminaFillBar != null)
+        {
+            staminaFillBar.fillAmount = CurrentStamina / statsData.maxStamina;
+        }
+
+        if (staminaText != null)
+        {
+            staminaText.text = Mathf.RoundToInt(CurrentStamina).ToString() + " / " + statsData.maxStamina.ToString();
+        }
     }
 
     private void HandleBlink()
@@ -75,7 +93,6 @@ public class PlayerParanoia : MonoBehaviour
 
     private void UpdateParanoiaPhase()
     {
-      
         float fase1Threshold = statsData.maxStamina * 0.60f;
         float fase2Threshold = statsData.maxStamina * 0.30f;
         float fase3Threshold = statsData.maxStamina * 0.10f;
@@ -84,15 +101,6 @@ public class PlayerParanoia : MonoBehaviour
         else if (CurrentStamina >= fase2Threshold) ParanoiaPhase = 1;
         else if (CurrentStamina >= fase3Threshold) ParanoiaPhase = 2;
         else ParanoiaPhase = 3;
-
-        if (ParanoiaPhase != lastPhase)
-        {
-            if (ParanoiaPhase == 3 && lastPhase < 3)
-            {
-                if (sfxChannel != null) sfxChannel.Raise(SoundID.StaminaLow);
-            }
-            lastPhase = ParanoiaPhase;
-        }
     }
 
     private IEnumerator BlinkRoutine()
@@ -112,13 +120,13 @@ public class PlayerParanoia : MonoBehaviour
 
     public void RefillStamina(float cantidad)
     {
-        // Al sumar, la propiedad se auto-limita al máximo
         CurrentStamina += cantidad;
 
         if (sfxChannel != null) sfxChannel.Raise(SoundID.StaminaRestored);
 
         Debug.Log("Stamina refilled! Ahora tenés: " + CurrentStamina);
     }
+
     public void DrainStamina(float cantidad)
     {
         CurrentStamina -= cantidad;

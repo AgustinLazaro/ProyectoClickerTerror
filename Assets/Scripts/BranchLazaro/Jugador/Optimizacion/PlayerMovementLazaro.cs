@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PlayerMovementLazaro : MonoBehaviour
 {
+    public PlayerInteraction playerInteraction;
+
     [Header("Movement Settings")]
     public float walkSpeed = 3f;
     public float acceleration = 8f;
@@ -36,6 +38,12 @@ public class PlayerMovementLazaro : MonoBehaviour
 
     void CalculateMovement()
     {
+        if (playerInteraction.isSitting)
+        {
+            currentVelocity = Vector3.zero;
+            isMoving = false;
+            return;
+        }
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveZ = Input.GetAxisRaw("Vertical");
 

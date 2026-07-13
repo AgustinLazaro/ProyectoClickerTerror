@@ -2,6 +2,11 @@ using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
+    [Header("Chair")]
+    public bool isSitting = false;
+    private Chair currentChair;
+
+   
     [Header("Raycast Settings")]
     public float rayDistance = 3f;
 
@@ -9,11 +14,14 @@ public class PlayerInteraction : MonoBehaviour
     public Camera playerCamera;
     public Animator armsAnimator;
 
-    [Header("Data (Arrastrá tu cubito acá)")]
-    public InventoryDataSO inventoryData; 
+    [Header("Data")]
+    public InventoryDataSO inventoryData;
 
     [Header("Managers")]
     public PlayerParanoia paranoiaManager;
+
+    public CharacterController characterController;
+    private InteractableBase previousTarget;
 
     public bool HasCoffeePot
     {
@@ -26,7 +34,6 @@ public class PlayerInteraction : MonoBehaviour
         get { return inventoryData.currentCupState; }
         set { inventoryData.currentCupState = value; }
     }
-    // -------------------
 
     void Start()
     {
@@ -37,21 +44,9 @@ public class PlayerInteraction : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButton(0))
+        if (isSitting && Input.GetKeyDown(KeyCode.E))
         {
-            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out RaycastHit hit, rayDistance))
-            {
-                if (hit.collider.TryGetComponent(out CoffeeCupLazaro cup))
-                {
-                    cup.TryFill(this);
-                }
-            }
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (armsAnimator != null) armsAnimator.SetTrigger("Grab");
-            HandleClickInteraction();
+            StandUp();
         }
 
         if (Input.GetMouseButtonDown(1) && CurrentCupState == CupState.Full)
@@ -59,41 +54,41 @@ public class PlayerInteraction : MonoBehaviour
             DrinkCoffee();
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        // 1. Detectar el objeto PRIMERO
+        InteractableBase currentTarget = null;
+        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out RaycastHit hit, rayDistance))
         {
-            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out RaycastHit hit, rayDistance))
+            currentTarget = hit.collider.GetComponent<InteractableBase>();
+        }
+
+        // 2. Lógica de Hover (Ahora currentTarget YA TIENE el valor)
+        if (currentTarget != previousTarget)
+        {
+            if (previousTarget != null) previousTarget.OnHoverExit();
+            if (currentTarget != null) currentTarget.OnHoverEnter();
+            previousTarget = currentTarget;
+        }
+
+        // 3. Inputs
+        if (currentTarget != null)
+        {
+            if (Input.GetMouseButton(0))
             {
-                if (hit.collider.TryGetComponent(out ComputerInteraction pc))
-                    pc.UseComputer();
+                Debug.Log($"Holding: {currentTarget.name}"); // DEBUG: Avisa si detecta que sostenés
+                currentTarget.OnClickHold(this);
             }
-        }
-    }
 
-    private void HandleClickInteraction()
-    {
-        if (!Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out RaycastHit hit, rayDistance))
-            return;
+            if (Input.GetMouseButtonDown(0))
+            {
+                Debug.Log($"Clicked: {currentTarget.name}"); // DEBUG: Avisa si detecta clic
+                if (armsAnimator != null) armsAnimator.SetTrigger("Grab");
+                currentTarget.OnClickDown(this);
+            }
 
-        if (hit.collider.TryGetComponent(out CoffeeMaker maker))
-        {
-            maker.Interact(this);
-            return;
-        }
-
-        if (hit.collider.TryGetComponent(out CoffeeCupLazaro cup))
-        {
-            if (cup.isOnTable && cup.isFull)
-                cup.GrabCup(this);
-            else if (!cup.isOnTable && CurrentCupState == CupState.Empty)
-                cup.PlaceCup(this);
-
-            return;
-        }
-
-        if (hit.collider.TryGetComponent(out BreakerSwitch breaker))
-        {
-            breaker.Interact();
-            return;
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                currentTarget.OnPressE(this);
+            }
         }
     }
 
@@ -102,5 +97,28 @@ public class PlayerInteraction : MonoBehaviour
         CurrentCupState = CupState.Empty;
         Debug.Log("Coffee consumed.");
         if (paranoiaManager != null) paranoiaManager.RefillStamina(30f);
+    }
+
+    public void SitInChair(Chair chair)
+    {
+        isSitting = true;
+
+        Transform playerBody = transform.parent;
+
+        playerBody.position = chair.sitPosition.position;
+        playerBody.rotation = chair.sitPosition.rotation;
+        transform.localRotation = Quaternion.Euler(0, 0, 0);
+
+        PlayerLook look = GetComponent<PlayerLook>();
+        if (look != null)
+        {
+            look.LockOnPC(chair.sitPosition);
+        }
+    }
+    public void StandUp()
+    {
+        isSitting = false;
+        PlayerLook look = GetComponentInChildren<PlayerLook>();
+        look.UnlockFromPC();
     }
 }

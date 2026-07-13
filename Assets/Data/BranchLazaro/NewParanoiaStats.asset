@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 688d07bcb3a9d63469f601cd113f1b29, type: 3}
   m_Name: NewParanoiaStats
   m_EditorClassIdentifier: Assembly-CSharp::ParanoiaStatsSO
-  maxStamina: 1000
-  baseDrainSpeed: 5
-  penaltyThreshold: 5
+  maxStamina: 500
+  baseDrainSpeed: 1
+  penaltyThreshold: 3
   penaltyMultiplier: 2

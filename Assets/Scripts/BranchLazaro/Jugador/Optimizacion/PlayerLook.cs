@@ -6,49 +6,75 @@ public class PlayerLook : MonoBehaviour
     public float mouseSensitivity = 200f;
     public Transform playerBody;
 
-    private float xRotation = 0f;
+    [Header("PC Sitting Lerp")]
+    public float pcLookLerpSpeed = 5f; 
+    private float targetYaw = 0f;     
+    private float currentYaw = 0f;     
+    private Quaternion baseSitRotation;
 
-    // Agregamos un estado para saber si estamos sentados en la PC
+    private float xRotation = 0f;
     public bool isLocked { get; private set; }
 
     void Update()
     {
-        // Si estamos interactuando con la PC, cortamos la ejecución para no mover el mouse
-        if (isLocked) return;
-
         HandleMouseLook();
     }
 
     private void HandleMouseLook()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
-
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-
-        // Movemos el cuello (Cámara)
-        transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-
-        // Movemos el cuerpo (Jugador)
-        if (playerBody != null)
+        if (isLocked)
         {
-            playerBody.Rotate(Vector3.up * mouseX);
+
+            if (Input.GetKey(KeyCode.A))
+            {
+                targetYaw = -90f;
+            }
+         
+            else if (Input.GetKey(KeyCode.D))
+            {
+                targetYaw = 0f;
+            }
+
+            currentYaw = Mathf.Lerp(currentYaw, targetYaw, pcLookLerpSpeed * Time.deltaTime);
+
+            if (playerBody != null)
+            {
+                playerBody.rotation = baseSitRotation * Quaternion.Euler(0, currentYaw, 0);
+            }
+        }
+        else
+        {
+            float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+            float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+
+            xRotation -= mouseY;
+            xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+            transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+            if (playerBody != null)
+            {
+                playerBody.Rotate(Vector3.up * mouseX);
+            }
         }
     }
-
-    // --- MÉTODOS PARA INTERACTUAR CON EL ENTORNO (SOLID) ---
 
     public void LockOnPC(Transform pcMonitorPosition)
     {
         isLocked = true;
 
-        // Opcional: Centrar la cámara apuntando al monitor al sentarse
-        // transform.LookAt(pcMonitorPosition); 
+        xRotation = 0f;
+        currentYaw = 0f;
+        targetYaw = 0f;
+        baseSitRotation = pcMonitorPosition.rotation;
+        transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
     }
 
     public void UnlockFromPC()
     {
         isLocked = false;
+        xRotation = 0f;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 }

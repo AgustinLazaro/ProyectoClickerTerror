@@ -1,6 +1,7 @@
 using UnityEngine;
+using System.Collections;
 
-public class CoffeeCupLazaro : MonoBehaviour
+public class CoffeeCupLazaro : InteractableBase
 {
     [Header("References")]
     public Transform liquid;
@@ -19,69 +20,80 @@ public class CoffeeCupLazaro : MonoBehaviour
     public float fillSpeed = 40f;
     public bool isFull = false;
     public bool isOnTable = true;
+    private bool isFilling = false;
 
-    void Start()
+    [Header("Audio Connection")]
+    public SFXEventChannelSO sfxChannel;
+
+    protected override void Start()
     {
-        if (liquid != null)
+        base.Start();
+        emptyScale = liquid.localScale;
+    }
+    public override void OnClickHold(PlayerInteraction player) { }
+
+    public override void OnClickDown(PlayerInteraction player)
+    {
+        Debug.Log("Cup clicked.");
+        if (isOnTable && !isFull && !isFilling && player.HasCoffeePot)
         {
-            emptyScale = liquid.localScale;
+            StartCoroutine(FillCupRoutine());
+        }
+        else if (isOnTable && isFull)
+        {
+            GrabCup(player);
+        }
+        else if (!isOnTable && player.CurrentCupState == CupState.Empty)
+        {
+            PlaceCup(player);
         }
     }
 
-    public void TryFill(PlayerInteraction player)
+    private IEnumerator FillCupRoutine()
     {
-        if (!isFull && player.HasCoffeePot && isOnTable)
+        isFilling = true;
+        liquidMesh.enabled = true;
+
+        while (fillProgress < 100f)
         {
             fillProgress += fillSpeed * Time.deltaTime;
+            liquid.localScale = Vector3.Lerp(emptyScale, fullScale, fillProgress / 100f);
 
-            if (liquid != null)
-            {
-                liquid.localScale = Vector3.Lerp(emptyScale, fullScale, fillProgress / 100f);
-            }
-
-            if (fillProgress >= 100f)
-            {
-                isFull = true;
-                fillProgress = 100f;
-                Debug.Log("Cup is full. Left Click to grab it.");
-            }
+            yield return null; 
         }
+
+        fillProgress = 100f;
+        isFull = true;
+        isFilling = false;
+        Debug.Log("Cup full. Ready to grab.");
     }
 
-    public void GrabCup(PlayerInteraction player)
+    private void GrabCup(PlayerInteraction player)
     {
-        if (isFull && isOnTable)
-        {
-            player.CurrentCupState = CupState.Full;
-            player.HasCoffeePot = false;
-            isOnTable = false;
+        player.CurrentCupState = CupState.Full;
+        player.HasCoffeePot = false;
+        isOnTable = false;
 
-            if (coffeeMaker != null) coffeeMaker.StartBrewing();
+        coffeeMaker.StartBrewing();
 
-            if (cupMesh != null) cupMesh.enabled = false;
-            if (liquidMesh != null) liquidMesh.enabled = false;
+        cupMesh.enabled = false;
+        liquidMesh.enabled = false;
 
-            Debug.Log("Grabbed the cup. Right Click to drink.");
-        }
+        Debug.Log("Grabbed the cup.");
     }
 
-    public void PlaceCup(PlayerInteraction player)
+    private void PlaceCup(PlayerInteraction player)
     {
-       
-        if (!isOnTable && player.CurrentCupState == CupState.Empty)
-        {
-            
-            player.CurrentCupState = CupState.None;
-            isOnTable = true;
+        player.CurrentCupState = CupState.None;
+        isOnTable = true;
+        isFull = false;
+        fillProgress = 0f;
 
-            isFull = false;
-            fillProgress = 0f;
-            if (liquid != null) liquid.localScale = emptyScale;
+        cupMesh.enabled = true;
+        liquidMesh.enabled = false;
 
-            if (cupMesh != null) cupMesh.enabled = true;
-            if (liquidMesh != null) liquidMesh.enabled = true;
+        sfxChannel.Raise(SoundID.PlaceCup);
 
-            Debug.Log("Placed empty cup on table. Ready for next brew.");
-        }
+        Debug.Log("Placed empty cup.");
     }
 }

@@ -18,8 +18,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: c72c18a65c5a3ed4ead4b1b025a1a5d8, type: 2}
   - {fileID: 2100000, guid: 057523c35ac98894fa1692c16a6b2827, type: 2}
   - {fileID: 2100000, guid: 02558090a64f563428be76397f7d0c72, type: 2}
-  - {fileID: 2100000, guid: bbdefb9f37638f3418ffaab4f0517a0d, type: 2}
-  - {fileID: 2100000, guid: 77ef2df6246e6da46bc48cd66bc62e5e, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

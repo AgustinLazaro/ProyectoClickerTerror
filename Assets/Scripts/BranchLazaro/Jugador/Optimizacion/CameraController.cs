@@ -43,11 +43,7 @@ public class CameraController : MonoBehaviour
         bobTimer += Time.deltaTime * bobSpeed;
         float newCameraY = defaultCameraY + (Mathf.Sin(bobTimer) * bobHeight);
 
-        transform.localPosition = new Vector3(
-            transform.localPosition.x,
-            newCameraY,
-            transform.localPosition.z
-        );
+        transform.localPosition = new Vector3(transform.localPosition.x, newCameraY, transform.localPosition.z);
     }
 
     private void ResetBob()
@@ -55,10 +51,6 @@ public class CameraController : MonoBehaviour
         bobTimer = 0f;
         float smoothReturnY = Mathf.Lerp(transform.localPosition.y, defaultCameraY, Time.deltaTime * smoothReturnSpeed);
 
-        transform.localPosition = new Vector3(
-            transform.localPosition.x,
-            smoothReturnY,
-            transform.localPosition.z
-        );
+        transform.localPosition = new Vector3(transform.localPosition.x, smoothReturnY, transform.localPosition.z);
     }
 }
