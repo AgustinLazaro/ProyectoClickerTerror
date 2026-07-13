@@ -27,6 +27,9 @@ public class DragObjectGame : MonoBehaviour, IApp
     [SerializeField] private Color colorB = new Color(1f, 0.5f, 0f); // naranja
     [SerializeField] private Color colorC = Color.green;
 
+    [Header("References")]
+    [SerializeField] private AppController appController;
+    [SerializeField] private ScoreManager scoreManager;
     [SerializeField] private PCAudioPlayer pcAudio;
 
     private Vector2 _initialPositionA;    //new
@@ -37,14 +40,8 @@ public class DragObjectGame : MonoBehaviour, IApp
     private bool isGameActive = false;
     private int _currentOrder = 0;    // 0=A, 1=B, 2=C
 
-    private AppController _appController;
-    private ScoreManager _scoreManager;
-
     private void Awake()
     {
-        _appController = FindAnyObjectByType<AppController>();
-        _scoreManager = FindAnyObjectByType<ScoreManager>();
-
         _initialPositionA = objectPurple.anchoredPosition;
         _initialPositionB = objectOrange.anchoredPosition;
         _initialPositionC = objectGreen.anchoredPosition;
@@ -163,7 +160,7 @@ public class DragObjectGame : MonoBehaviour, IApp
         if (win)
         {
             pcAudio.PlaySound(SoundID.WinJingle);
-            _scoreManager.AddPoints(20);
+            scoreManager.AddPoints(20);
         }
         else
         {
@@ -176,7 +173,7 @@ public class DragObjectGame : MonoBehaviour, IApp
     private IEnumerator BackToHomeScreen()
     {
         yield return new WaitForSeconds(2f);
-        _appController.CloseCurrentApp();
+        appController.CloseCurrentApp();
     }
 
     private void UpdateTextOrder()
