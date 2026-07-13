@@ -28,7 +28,8 @@ public class DragObjectGame : MonoBehaviour, IApp
     [SerializeField] private Color colorB = new Color(1f, 0.5f, 0f); // naranja
     [SerializeField] private Color colorC = Color.green;
 
-    [SerializeField] private SFXEventChannelSO sfxChannel;
+    [SerializeField] private PCAudioPlayer pcAudio;
+    //[SerializeField] private SFXEventChannelSO sfxChannel;
 
     private Vector2 _initialPositionA;    //new
     private Vector2 _initialPositionB;    //new
@@ -90,7 +91,7 @@ public class DragObjectGame : MonoBehaviour, IApp
         if (!isGameActive) return;
         if (draggedObject != GetCurrentObject()) return;    // no es el turno de este objet
 
-        sfxChannel.Raise(SoundID.Click);
+        pcAudio.PlaySound(SoundID.Click);
     }
 
     public void OnDrag(RectTransform draggedObject, Vector2 delta)
@@ -163,12 +164,12 @@ public class DragObjectGame : MonoBehaviour, IApp
 
         if (win)
         {
-            sfxChannel.Raise(SoundID.WinJingle);
+            pcAudio.PlaySound(SoundID.WinJingle);
             _scoreManager.AddPoints(20);
         }
         else
         {
-            sfxChannel.Raise(SoundID.LoseJingle);
+            pcAudio.PlaySound(SoundID.LoseJingle);
         }
 
         StartCoroutine(BackToHomeScreen());

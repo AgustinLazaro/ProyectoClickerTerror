@@ -17,7 +17,8 @@ public class PopUpManager : MonoBehaviour
         "ERROR: memoria insuficiente"
     };
 
-    [SerializeField] private SFXEventChannelSO sfxChannel;
+    [SerializeField] private PCAudioPlayer pcAudio;
+    //[SerializeField] private SFXEventChannelSO sfxChannel;
 
     private float _nextTimePopUp;
     private GameObject _currentPopUp = null;
@@ -42,7 +43,7 @@ public class PopUpManager : MonoBehaviour
     private void ShowPopUp()
     {
         //_audioManager.PlayError();
-        sfxChannel.Raise(SoundID.Error);
+        pcAudio.PlaySound(SoundID.Error);
         string mensaje = messages[Random.Range(0, messages.Length)];
 
         _currentPopUp = Instantiate(popUpPrefab, popUpContainer);
@@ -63,7 +64,7 @@ public class PopUpManager : MonoBehaviour
         if (_currentPopUp == null) return;
 
         //_audioManager.PlayClick();
-        sfxChannel.Raise(SoundID.Click);
+        pcAudio.PlaySound(SoundID.Click);
 
         Destroy(_currentPopUp);
         _currentPopUp = null;

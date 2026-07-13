@@ -39,7 +39,8 @@ public class AvoidClickGame : MonoBehaviour, IApp
     [SerializeField] private AppController appController;
     [SerializeField] private ScoreManager scoreManager;
 
-    [SerializeField] private SFXEventChannelSO sfxChannel;
+    [SerializeField] private PCAudioPlayer pcAudio;
+    //[SerializeField] private SFXEventChannelSO sfxChannel;
 
     // Pool de objetos reciclables (evita Instantiate/Destroy en cada ronda)
     private readonly List<ClickableObject> _pool = new List<ClickableObject>();
@@ -241,11 +242,11 @@ public class AvoidClickGame : MonoBehaviour, IApp
             obj.Hide();
             _activesInRound.Remove(obj);
             _rightsClickedInRound++;
-            sfxChannel.Raise(SoundID.Click);
+            pcAudio.PlaySound(SoundID.Click);
         }
         else
         {
-            sfxChannel.Raise(SoundID.Error);
+            pcAudio.PlaySound(SoundID.Error);
             GameOver(win: false);
         }
     }
@@ -260,9 +261,9 @@ public class AvoidClickGame : MonoBehaviour, IApp
         resultText.text = win ? "¡Ganaste!" : "¡Perdiste!";
 
         if (win)
-            sfxChannel.Raise(SoundID.WinJingle);
+            pcAudio.PlaySound(SoundID.WinJingle);
         else
-            sfxChannel.Raise(SoundID.LoseJingle);
+            pcAudio.PlaySound(SoundID.LoseJingle);
 
         scoreManager.AddPoints(win ? 10 : 0);
         StartCoroutine(BackToHomeScreen());
