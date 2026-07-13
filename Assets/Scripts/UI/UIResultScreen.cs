@@ -36,8 +36,7 @@ public class UIResultScreen : MonoBehaviour
     }
 
     private void OnDisable()
-    {
-        
+    {    
         managerMarian.OnGameOver -= ShowGameOverScreen;
         managerMarian.OnVictory -= ShowVictoryScreen;
     }
@@ -74,6 +73,7 @@ public class UIResultScreen : MonoBehaviour
     {
         
         Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         gameoverPanel.alpha = 1;
         gameoverPanel.interactable = true;
         gameoverPanel.blocksRaycasts = true;
@@ -82,6 +82,7 @@ public class UIResultScreen : MonoBehaviour
     {
       
         Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         victoryPanel.alpha = 1;
         victoryPanel.interactable = true;
         victoryPanel.blocksRaycasts = true;

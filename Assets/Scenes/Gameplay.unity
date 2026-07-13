@@ -2766,7 +2766,7 @@ MonoBehaviour:
   keyGodMode: 284
   gameManager: {fileID: 624447969}
   paranoiaManager: {fileID: 545055907}
-  scoreManager: {fileID: 3534649253185608951}
+  scoreManager: {fileID: 0}
   appController: {fileID: 3534649253185608950}
 --- !u!1001 &207778539
 PrefabInstance:
@@ -34435,17 +34435,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54e7218dd8f74fc418deb58cd204ba61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AppController
---- !u!114 &3534649253185608951 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3172938684675397841, guid: 9219b489974810140afc3ccdd678adb4, type: 3}
-  m_PrefabInstance: {fileID: 3534649253185608949}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b2504c0de05f104f9f1f752851a247d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ScoreManager
 --- !u!1 &3542816521383240226
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,12 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
 public class UIPause : MonoBehaviour
 {
     [Header("Managers")]
     [SerializeField] private GameManagerMarian gameManager;
-
 
     [Header("Panels")]
     [SerializeField] private CanvasGroup panelMainPause;
@@ -52,18 +50,19 @@ public class UIPause : MonoBehaviour
             gameManager.Pause();
             Time.timeScale = 0f;
             Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
         else
         {
             gameManager.Resume();
             Time.timeScale = 1f;
             Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
     }
 
     public void OnPlayClicked()
     {
-       
         TogglePause();
     }
 
@@ -75,10 +74,8 @@ public class UIPause : MonoBehaviour
     {
         ExitGame();
     }
-
     private void ExitGame()
     {
-      
         SceneManager.LoadScene(0);
     }
 
@@ -88,8 +85,7 @@ public class UIPause : MonoBehaviour
     }
 
     private void SetStateCanvasGroup(CanvasGroup canvasGroup, bool state)
-    {
-       
+    { 
         canvasGroup.alpha = state ? 1 : 0;
         canvasGroup.interactable = state;
         canvasGroup.blocksRaycasts = state;
