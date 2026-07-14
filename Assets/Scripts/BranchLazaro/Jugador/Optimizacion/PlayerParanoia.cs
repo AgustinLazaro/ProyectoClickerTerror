@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.UI; 
+using UnityEngine.UI;
 using TMPro;
 
 public class PlayerParanoia : MonoBehaviour
@@ -33,7 +33,7 @@ public class PlayerParanoia : MonoBehaviour
     }
 
     public int ParanoiaPhase { get; private set; } = 0;
-
+    public bool IsGodModeActivated = false;
     private float timeWithoutBlinking = 0f;
     private bool isBlinking = false;
     private int lastPhase = 0;
@@ -58,8 +58,8 @@ public class PlayerParanoia : MonoBehaviour
     private void UpdateUI()
     {
         staminaFillBar.fillAmount = CurrentStamina / statsData.maxStamina;
-       
-        
+
+
     }
 
     private void HandleBlink()
@@ -75,8 +75,9 @@ public class PlayerParanoia : MonoBehaviour
     private void HandleStamina()
     {
         float currentDrainSpeed = timeWithoutBlinking > statsData.penaltyThreshold ? statsData.baseDrainSpeed * statsData.penaltyMultiplier : statsData.baseDrainSpeed;
-        CurrentStamina -= currentDrainSpeed * Time.deltaTime;
-        if (managerMarian != null && CurrentStamina<=0) 
+        if (!IsGodModeActivated)
+            CurrentStamina -= currentDrainSpeed * Time.deltaTime;
+        if (managerMarian != null && CurrentStamina <= 0)
             managerMarian.GameOver();
     }
 

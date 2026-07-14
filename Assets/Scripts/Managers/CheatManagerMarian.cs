@@ -9,7 +9,7 @@ public class CheatManagerMarian : MonoBehaviour
 
     [Header("God Mode Settings")]
     [SerializeField] private GameManagerMarian gameManager;
-    //[SerializeField] private PlayerParanoia paranoiaManager;
+    [SerializeField] private PlayerParanoia paranoiaManager;
     [SerializeField] private ScoreManager scoreManager;
     [SerializeField] private AppController appController;
 
@@ -51,8 +51,8 @@ public class CheatManagerMarian : MonoBehaviour
     private void MantenerGodMode()
     {
         // stamina siempre al máximo
-        //if (paranoiaManager != null)
-            //paranoiaManager.CurrentStamina = 100f;
+        if (paranoiaManager != null)
+            paranoiaManager.IsGodModeActivated = true;
 
         // puntaje al máximo instantáneo
         if (scoreManager != null)

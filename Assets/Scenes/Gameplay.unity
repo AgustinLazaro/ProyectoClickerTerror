@@ -2770,6 +2770,7 @@ MonoBehaviour:
   keyLose: 283
   keyGodMode: 284
   gameManager: {fileID: 624447969}
+  paranoiaManager: {fileID: 545055907}
   scoreManager: {fileID: 1821234910}
   appController: {fileID: 3534649253185608950}
 --- !u!1001 &207778539
@@ -10461,6 +10462,7 @@ MonoBehaviour:
   staminaFillBar: {fileID: 316673236}
   staminaText: {fileID: 0}
   managerMarian: {fileID: 624447969}
+  IsGodModeActivated: 0
 --- !u!114 &545055908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13212,11 +13214,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Postprocessing.Runtime::UnityEngine.Rendering.PostProcessing.PostProcessVolume
-  sharedProfile: {fileID: 11400000, guid: 8a7816099aba15c42b162cb7c3621d39, type: 2}
-  isGlobal: 1
+  sharedProfile: {fileID: 0}
+  isGlobal: 0
   blendDistance: 0
   weight: 1
-  priority: 2
+  priority: 0
 --- !u!1 &810060475
 GameObject:
   m_ObjectHideFlags: 0
@@ -14745,11 +14747,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Postprocessing.Runtime::UnityEngine.Rendering.PostProcessing.PostProcessVolume
-  sharedProfile: {fileID: 11400000, guid: c571ce0c11aa4f64aafcfbd68c14c999, type: 2}
-  isGlobal: 1
+  sharedProfile: {fileID: 0}
+  isGlobal: 0
   blendDistance: 0
   weight: 1
-  priority: 3
+  priority: 0
 --- !u!1 &853637897
 GameObject:
   m_ObjectHideFlags: 0
@@ -24755,11 +24757,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Postprocessing.Runtime::UnityEngine.Rendering.PostProcessing.PostProcessVolume
-  sharedProfile: {fileID: 11400000, guid: 787c4eeab7c9e6b40a8d7de9e97b93b2, type: 2}
-  isGlobal: 1
+  sharedProfile: {fileID: 0}
+  isGlobal: 0
   blendDistance: 0
   weight: 1
-  priority: 1
+  priority: 0
 --- !u!4 &1784890764 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ebc145e48892ebe439d229802cf92b13, type: 3}
@@ -28372,10 +28374,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 948f4100a11a5c24981795d21301da5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Postprocessing.Runtime::UnityEngine.Rendering.PostProcessing.PostProcessLayer
-  volumeTrigger: {fileID: 2063018873}
+  volumeTrigger: {fileID: 0}
   volumeLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 0
   stopNaNPropagation: 1
   finalBlitToCameraTarget: 0
   antialiasingMode: 0
@@ -28413,7 +28415,7 @@ MonoBehaviour:
       motionGridSize: 64
       colorBlindnessType: 0
       colorBlindnessStrength: 1
-  m_Resources: {fileID: 11400000, guid: d82512f9c8e5d4a4d938b575d47f88d4, type: 2}
+  m_Resources: {fileID: 0}
   m_ShowToolkit: 0
   m_ShowCustomSorter: 0
   breakBeforeColorGrading: 0
@@ -41724,13 +41726,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RadioInteractable
   interactText: Interact
   isInteractable: 1
-  targetMesh: {fileID: 5921156471413045473}
-  hoverMaterial: {fileID: 2100000, guid: 6fe20140b992f2b498e6d0095ab8ad4c, type: 2}
+  targetMesh: {fileID: 0}
+  hoverMaterial: {fileID: 0}
   sfxChannel: {fileID: 0}
-  radioClips:
-  - {fileID: 8300000, guid: 90b166186cebe2a49b79deb462c237df, type: 3}
-  - {fileID: 8300000, guid: fb2c24e472aed1449ab8bcd5d4c3292b, type: 3}
-  - {fileID: 8300000, guid: 31aee2a94e57b7044bd712b6a864398b, type: 3}
+  radioClips: []
 --- !u!82 &8565324936792751162
 AudioSource:
   m_ObjectHideFlags: 0
