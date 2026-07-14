@@ -58,7 +58,7 @@ public class PlayerParanoia : MonoBehaviour
     private void UpdateUI()
     {
         staminaFillBar.fillAmount = CurrentStamina / statsData.maxStamina;
-        staminaText.text = Mathf.RoundToInt(CurrentStamina).ToString() + " / " + statsData.maxStamina.ToString();
+       
         
     }
 
@@ -76,7 +76,8 @@ public class PlayerParanoia : MonoBehaviour
     {
         float currentDrainSpeed = timeWithoutBlinking > statsData.penaltyThreshold ? statsData.baseDrainSpeed * statsData.penaltyMultiplier : statsData.baseDrainSpeed;
         CurrentStamina -= currentDrainSpeed * Time.deltaTime;
-        if (managerMarian != null) managerMarian.GameOver();
+        if (managerMarian != null && CurrentStamina<=0) 
+            managerMarian.GameOver();
     }
 
     private void UpdateParanoiaPhase()
